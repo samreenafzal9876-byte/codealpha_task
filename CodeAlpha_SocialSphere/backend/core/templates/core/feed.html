@@ -1,0 +1,219 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Home Feed - SocialSphere{% endblock %}
+{% block feed_active %}active{% endblock %}
+{% block mobile_feed_active %}active{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="feed-header">
+        <h2 class="feed-title" id="feed-page-title">Home Feed</h2>
+    </div>
+    
+    <!-- Inline Post Composer -->
+    <div class="card post-composer" style="padding: 20px;">
+        <form method="post" enctype="multipart/form-data" action="{% url 'create_post' %}">
+            {% csrf_token %}
+            <div class="post-composer-row" style="display: flex; gap: 16px;">
+                {% if user.profile.profile_picture %}
+                    <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" class="user-avatar-sm" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="user-avatar-sm" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                {% endif %}
+                
+                <div class="post-composer-input" style="flex: 1;">
+                    {{ form.caption }}
+                    
+                    <!-- Media attachment preview container -->
+                    <div id="composer-media-preview-container" style="display:none; position:relative; margin-bottom:12px; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border-color)">
+                        <img src="" id="composer-media-preview-img" style="width:100%; max-height:220px; object-fit:cover;">
+                        <button type="button" id="cancel-media-preview-btn" style="position:absolute; top:8px; right:8px; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,0.6); color:white; display:flex; align-items:center; justify-content:center; cursor:pointer; border: none;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    {{ form.image }}
+
+                    <div class="post-composer-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                        <div class="post-composer-tools" style="display: flex; gap: 8px;">
+                            <button type="button" class="tool-btn" id="attach-image-btn" title="Add Image" style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer;">
+                                <i class="fa-regular fa-image"></i>
+                            </button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Post <i class="fa-solid fa-paper-plane" style="font-size:0.8rem"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Feed Post List -->
+    <div id="posts-feed-container" style="margin-top: 24px;">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="card post-card" style="margin-bottom: 20px;">
+                    <div class="post-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div class="post-author" style="display: flex; align-items: center; gap: 12px;">
+                            <a href="{% url 'profile' username=post.user.username %}">
+                                {% if post.user.profile.profile_picture %}
+                                    <img src="{{ post.user.profile.profile_picture.url }}" alt="{{ post.user.username }}" class="post-author-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="post-author-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                {% endif %}
+                            </a>
+                            <div class="post-author-meta">
+                                <a href="{% url 'profile' username=post.user.username %}" class="post-author-name" style="font-weight: 600; color: var(--text-primary); text-decoration: none;">
+                                    {{ post.user.first_name|default:post.user.username }}
+                                </a>
+                                <span class="post-author-handle" style="display: block; font-size: 0.8rem; color: var(--text-muted);">
+                                    @{{ post.user.username }}
+                                </span>
+                            </div>
+                        </div>
+                        <span class="post-time" style="font-size: 0.8rem; color: var(--text-muted);">
+                            {{ post.created_date|timesince }} ago
+                        </span>
+                    </div>
+
+                    <div class="post-content" style="color: var(--text-primary); margin-bottom: 12px; line-height: 1.5; white-space: pre-wrap;">{{ post.caption }}</div>
+
+                    {% if post.image %}
+                        <a href="{% url 'post_detail' pk=post.pk %}">
+                            <img src="{{ post.image.url }}" alt="Post image" class="post-image" style="width: 100%; border-radius: var(--radius-md); max-height: 350px; object-fit: cover; margin-bottom: 12px;">
+                        </a>
+                    {% endif %}
+
+                    <div class="post-actions" style="display: flex; gap: 16px; border-top: 1px solid var(--border-color); padding-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
+                        <button onclick="toggleLike({{ post.pk }}, this)" style="background: none; border: none; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            {% if post.pk in liked_posts_ids %}
+                                <i class="fa-solid fa-heart" style="color: var(--danger);"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart"></i>
+                            {% endif %}
+                            <span class="like-count">{{ post.likes.count }}</span>
+                        </button>
+                        <a href="{% url 'post_detail' pk=post.pk %}" class="action-trigger" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>{{ post.comments.count }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card" style="text-align:center; padding:48px 24px;">
+                <i class="fa-regular fa-face-meh" style="font-size:2.5rem; color:var(--text-muted); margin-bottom:12px; display: block;"></i>
+                <p style="color:var(--text-secondary); font-size:1rem;">No posts found in your feed.</p>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Right Sidebar Widgets -->
+<aside class="sidebar-right">
+    <div class="widget-card">
+        <div class="widget-title">
+            <span>Trending Topics</span>
+        </div>
+        <div class="trends-list">
+            <div class="trend-item">
+                <span class="trend-category">Technology • Trending</span>
+                <span class="trend-name">#webdesign</span>
+                <span class="trend-posts">12.5K posts</span>
+            </div>
+            <div class="trend-item">
+                <span class="trend-category">Programming • Trending</span>
+                <span class="trend-name">debugging</span>
+                <span class="trend-posts">8.1K posts</span>
+            </div>
+        </div>
+    </div>
+</aside>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const attachBtn = document.getElementById("attach-image-btn");
+        const fileInput = document.getElementById("create-pic-input");
+        const previewContainer = document.getElementById("composer-media-preview-container");
+        const previewImg = document.getElementById("composer-media-preview-img");
+        const cancelBtn = document.getElementById("cancel-media-preview-btn");
+
+        if (attachBtn && fileInput) {
+            attachBtn.addEventListener("click", () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        previewImg.src = event.target.result;
+                        previewContainer.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener("click", () => {
+                fileInput.value = "";
+                previewImg.src = "";
+                previewContainer.style.display = "none";
+            });
+        }
+    });
+
+    function toggleLike(postId, btn) {
+        fetch(`/post/${postId}/like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const icon = btn.querySelector('i');
+            const count = btn.querySelector('.like-count');
+            if (data.liked) {
+                icon.className = 'fa-solid fa-heart';
+                icon.style.color = 'var(--danger)';
+            } else {
+                icon.className = 'fa-regular fa-heart';
+                icon.style.color = '';
+            }
+            count.textContent = data.likes_count;
+        })
+        .catch(err => console.error("Error toggling like:", err));
+    }
+</script>
+<style>
+    .post-composer-input textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.95rem;
+        resize: none;
+        min-height: 80px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .post-composer-input textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    .tool-btn:hover {
+        color: var(--primary) !important;
+    }
+</style>
+{% endblock %}

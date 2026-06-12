@@ -1,0 +1,101 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Settings - Aura Store Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">System Settings</h1>
+        <span class="text-muted small">Configure website details, shipping rules, and administrator profiles.</span>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Navigation Options (col-lg-3) -->
+    <div class="col-lg-3">
+        <div class="card p-3 border shadow-sm bg-white">
+            <div class="nav flex-column nav-pills" id="settingsTabs" role="tablist" aria-orientation="vertical">
+                <button class="nav-link active py-2.5 text-start fw-semibold" id="website-tab" data-bs-toggle="pill" data-bs-target="#website-settings" type="button" role="tab" aria-controls="website-settings" aria-selected="true"><i class="bi bi-globe me-2"></i> Website Details</button>
+                <button class="nav-link py-2.5 text-start fw-semibold" id="admin-profile-tab" data-bs-toggle="pill" data-bs-target="#admin-profile-settings" type="button" role="tab" aria-controls="admin-profile-settings" aria-selected="false"><i class="bi bi-person-gear me-2"></i> Admin Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forms Panels (col-lg-9) -->
+    <div class="col-lg-9">
+        <div class="card p-4 border shadow-sm bg-white">
+            <div class="tab-content" id="settingsTabsContent">
+                <!-- WEBSITE SETTINGS -->
+                <div class="tab-pane fade show active" id="website-settings" role="tabpanel" aria-labelledby="website-tab">
+                    <h4 class="fw-bold text-dark mb-2" style="font-family: 'Outfit', sans-serif;">Website Configuration</h4>
+                    <p class="text-muted small mb-4">Manage details displayed on your storefront catalog pages.</p>
+                    
+                    <form action="#" method="get" onsubmit="event.preventDefault(); alert('Website settings saved (Mock)!');">
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Store Name</label>
+                            <input type="text" class="form-control" value="Aura Store" required>
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium">Support Email</label>
+                                <input type="email" class="form-control" value="support@aurastore.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium">Contact Hotline</label>
+                                <input type="text" class="form-control" value="+1 (800) 555-0199" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium">Free Shipping Minimum Threshold ($)</label>
+                                <input type="number" class="form-control" value="150" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium">Sales Tax Rate (%)</label>
+                                <input type="number" step="0.01" class="form-control" value="8.25" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4">Save Configuration</button>
+                    </form>
+                </div>
+
+                <!-- ADMIN PROFILE SETTINGS -->
+                <div class="tab-pane fade" id="admin-profile-settings" role="tabpanel" aria-labelledby="admin-profile-tab">
+                    <h4 class="fw-bold text-dark mb-2" style="font-family: 'Outfit', sans-serif;">Administrator Profile</h4>
+                    <p class="text-muted small mb-4">Update your dashboard credentials and email channels.</p>
+                    
+                    <form action="#" method="get" onsubmit="event.preventDefault(); alert('Profile details updated (Mock)!');">
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Username</label>
+                            <input type="text" class="form-control bg-light" value="{{ user.username }}" disabled>
+                            <div class="form-text small" style="font-size: 0.75rem;">Username cannot be modified.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-medium">Email Address</label>
+                            <input type="email" class="form-control" value="{{ user.email }}" required>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium">First Name</label>
+                                <input type="text" class="form-control" value="{{ user.first_name }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium">Last Name</label>
+                                <input type="text" class="form-control" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

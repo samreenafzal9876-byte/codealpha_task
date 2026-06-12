@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - SocialSphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout" class="full-width">
+        <main class="main-content" style="max-width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-logo">
+                        <i class="fa-solid fa-circle-nodes"></i>
+                        <span>SocialSphere</span>
+                    </div>
+                    <p class="auth-subtitle">Sign in to see what's happening in your sphere</p>
+                </div>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" class="input-field" placeholder="Enter your username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="input-field" placeholder="••••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full" style="margin-top: 10px; padding: 12px 24px;">
+                        Sign In <i class="fa-solid fa-right-to-bracket"></i>
+                    </button>
+                </form>
+                
+                <div style="margin-top: 20px; text-align: center; font-size: 0.8rem; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-sm);">
+                    <p style="color:var(--text-muted); font-weight:600; margin-bottom:4px;">Test accounts:</p>
+                    <p style="color:var(--text-secondary);">Username: <code style="color:var(--primary);">jane_doe</code> or <code style="color:var(--primary);">alex_smith</code></p>
+                    <p style="color:var(--text-muted); font-size: 0.75rem; margin-top:2px;">(No password required, works with any input!)</p>
+                </div>
+                
+                <div class="auth-footer">
+                    Don't have an account? <a href="register.html" class="btn-link">Sign Up</a>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="toast-container"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

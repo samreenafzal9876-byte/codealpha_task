@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop Products - Aura Store{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filter-sidebar {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+    .filter-title {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 0.5rem;
+    }
+    .category-link {
+        color: #475569;
+        text-decoration: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    .category-link:hover {
+        background-color: #f8fafc;
+        color: #6366f1;
+        padding-left: 1rem;
+    }
+    .category-link.active {
+        background-color: rgba(99, 102, 241, 0.08);
+        color: #6366f1;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Sidebar Filters (col-lg-3) -->
+        <div class="col-lg-3">
+            <div class="filter-sidebar shadow-sm">
+                <!-- Search Filter Form -->
+                <form action="{% url 'products:product_list' %}" method="get" id="filterForm">
+                    <!-- Carry forward sorting choice if selected -->
+                    {% if sort_option %}
+                        <input type="hidden" name="sort" value="{{ sort_option }}">
+                    {% endif %}
+                    {% if selected_category %}
+                        <input type="hidden" name="category" value="{{ selected_category.slug }}">
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <h5 class="filter-title">Search</h5>
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Type keyword..." value="{{ search_query }}">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Category Filters -->
+                <div class="mb-4">
+                    <h5 class="filter-title">Categories</h5>
+                    <div class="d-flex flex-column gap-1">
+                        <a href="{% url 'products:product_list' %}{% if search_query %}?search={{ search_query }}{% endif %}" class="category-link {% if not selected_category %}active{% endif %}">
+                            <span>All Products</span>
+                            <span class="badge bg-secondary rounded-pill">{{ products.count }}</span>
+                        </a>
+                        {% for cat in categories %}
+                            <a href="{% url 'products:product_list' %}?category={{ cat.slug }}{% if search_query %}&search={{ search_query }}{% endif %}{% if sort_option %}&sort={{ sort_option }}{% endif %}" class="category-link {% if selected_category.slug == cat.slug %}active{% endif %}">
+                                <span>{{ cat.name }}</span>
+                                <span class="badge bg-light text-muted border rounded-pill">{{ cat.products.count }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sorting Option Panel (Responsive) -->
+                <div>
+                    <h5 class="filter-title">Sort By</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="?{% if selected_category %}category={{ selected_category.slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}sort=newest" class="btn btn-sm text-start {% if sort_option == 'newest' %}btn-primary{% else %}btn-light{% endif %}">
+                            <i class="bi bi-calendar3 me-2"></i> Newest Arrivals
+                        </a>
+                        <a href="?{% if selected_category %}category={{ selected_category.slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}sort=price_asc" class="btn btn-sm text-start {% if sort_option == 'price_asc' %}btn-primary{% else %}btn-light{% endif %}">
+                            <i class="bi bi-sort-numeric-down me-2"></i> Price: Low to High
+                        </a>
+                        <a href="?{% if selected_category %}category={{ selected_category.slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}sort=price_desc" class="btn btn-sm text-start {% if sort_option == 'price_desc' %}btn-primary{% else %}btn-light{% endif %}">
+                            <i class="bi bi-sort-numeric-up-alt me-2"></i> Price: High to Low
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Grid (col-lg-9) -->
+        <div class="col-lg-9">
+            <!-- Header bar showing details -->
+            <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm border">
+                <div>
+                    <h1 class="h3 mb-0" style="font-family: 'Outfit', sans-serif;">
+                        {% if selected_category %}{{ selected_category.name }}{% else %}All Products{% endif %}
+                    </h1>
+                    <span class="small text-muted">Showing {{ products|length }} products</span>
+                </div>
+                <!-- Filters badge indicators -->
+                <div class="d-flex gap-2">
+                    {% if selected_category %}
+                        <a href="{% url 'products:product_list' %}{% if search_query %}?search={{ search_query }}{% endif %}" class="btn btn-xs btn-outline-danger py-1 px-2 rounded-pill small" style="font-size: 0.75rem;">
+                            {{ selected_category.name }} <i class="bi bi-x-circle ms-1"></i>
+                        </a>
+                    {% endif %}
+                    {% if search_query %}
+                        <a href="{% url 'products:product_list' %}{% if selected_category %}?category={{ selected_category.slug }}{% endif %}" class="btn btn-xs btn-outline-danger py-1 px-2 rounded-pill small" style="font-size: 0.75rem;">
+                            "{{ search_query }}" <i class="bi bi-x-circle ms-1"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Product Grid row -->
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="position-relative overflow-hidden bg-light rounded-top" style="height: 220px; display: flex; align-items: center; justify-content: center;">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 1rem;">
+                            {% else %}
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fw-bold">
+                                    AURA
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body p-3.5 d-flex flex-column">
+                            <span class="text-muted small mb-1">{{ product.category.name }}</span>
+                            <h5 class="card-title fs-6 mb-2"><a href="{% url 'products:product_detail' product.slug %}" class="text-decoration-none text-dark fw-semibold">{{ product.name }}</a></h5>
+                            <p class="text-muted small text-truncate mb-3">{{ product.description }}</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fs-5 fw-bold text-dark">${{ product.price }}</span>
+                                
+                                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="m-0">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-outline-primary rounded-pill btn-sm px-2.5">
+                                        <i class="bi bi-cart-plus"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5 bg-white rounded border">
+                    <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted">No products found</h4>
+                    <p class="text-muted small">Try refining your search terms or selecting a different category.</p>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary mt-2">Reset Filters</a>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination UI Placeholder -->
+            {% if products|length > 0 %}
+            <nav class="mt-5 d-flex justify-content-center">
+                <ul class="pagination pagination-md shadow-sm rounded">
+                    <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

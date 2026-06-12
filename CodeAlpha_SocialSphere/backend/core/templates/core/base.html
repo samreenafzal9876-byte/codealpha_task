@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SocialSphere{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div id="app-layout" class="{% block layout_class %}{% endblock %}">
+        {% if user.is_authenticated %}
+            <!-- A. TOP NAVBAR -->
+            <header class="top-navbar">
+                <div class="logo-container">
+                    <a href="{% url 'feed' %}" style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-circle-nodes"></i>
+                        <span>SocialSphere</span>
+                    </a>
+                </div>
+                <div class="nav-search">
+                    <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
+                    <input type="text" id="global-search-input" placeholder="Search posts or topics...">
+                </div>
+                <div class="nav-actions">
+                    <a href="{% url 'create_post' %}" class="icon-btn" title="Create Post">
+                        <i class="fa-solid fa-plus"></i>
+                    </a>
+                    <a href="{% url 'notifications' %}" class="icon-btn" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                    </a>
+                    <div class="profile-trigger" id="profile-dropdown-trigger" onclick="window.location.href='{% url 'profile' username=user.username %}'">
+                        {% if user.profile.profile_picture %}
+                            <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" class="avatar">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Default Avatar" class="avatar">
+                        {% endif %}
+                    </div>
+                    <div class="mobile-toggle" id="mobile-drawer-toggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- B. LEFT SIDEBAR -->
+            <aside class="sidebar-left" id="app-sidebar-left">
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="{% url 'feed' %}" class="sidebar-link {% block feed_active %}{% endblock %}">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Feed</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'notifications' %}" class="sidebar-link">
+                            <i class="fa-solid fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'create_post' %}" class="sidebar-link {% block create_active %}{% endblock %}">
+                            <i class="fa-solid fa-square-plus"></i>
+                            <span>Create Post</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'profile' username=user.username %}" class="sidebar-link {% block profile_active %}{% endblock %}">
+                            <i class="fa-solid fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'followers_list' username=user.username %}" class="sidebar-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Followers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'following_list' username=user.username %}" class="sidebar-link">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Following</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'settings' %}" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li style="margin-top: auto; padding-top: 40px;">
+                        <a href="{% url 'logout' %}" class="sidebar-link">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- C. MOBILE BOTTOM NAVIGATION -->
+            <nav class="mobile-bottom-nav">
+                <a href="{% url 'feed' %}" class="mobile-nav-link {% block mobile_feed_active %}{% endblock %}">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Feed</span>
+                </a>
+                <a href="{% url 'notifications' %}" class="mobile-nav-link">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Alerts</span>
+                </a>
+                <a href="{% url 'create_post' %}" class="mobile-nav-link {% block mobile_create_active %}{% endblock %}">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>Post</span>
+                </a>
+                <a href="{% url 'profile' username=user.username %}" class="mobile-nav-link {% block mobile_profile_active %}{% endblock %}">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+
+            <!-- D. MOBILE SIDEBAR OVERLAY -->
+            <div class="sidebar-overlay" id="app-sidebar-overlay"></div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Django Message Toasts -->
+    {% if messages %}
+        <div id="toast-container">
+            {% for message in messages %}
+                <div class="toast {{ message.tags }} show">
+                    {% if message.tags == 'success' %}
+                        <i class="fa-solid fa-circle-check"></i>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    {% else %}
+                        <i class="fa-solid fa-info-circle"></i>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        <style>
+            #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+            .toast { background: var(--bg-card); color: var(--text-primary); padding: 16px 24px; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; min-width: 250px; animation: slideIn 0.3s ease-out; }
+            .toast.success { border-left: 4px solid var(--success); }
+            .toast.error, .toast.danger { border-left: 4px solid var(--danger); }
+            .toast.info { border-left: 4px solid var(--primary); }
+            @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        </style>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                setTimeout(() => {
+                    const toasts = document.querySelectorAll("#toast-container .toast");
+                    toasts.forEach(toast => {
+                        toast.style.transition = "opacity 0.3s, transform 0.3s";
+                        toast.style.opacity = "0";
+                        toast.style.transform = "translateY(-10px)";
+                        setTimeout(() => toast.remove(), 300);
+                    });
+                }, 3000);
+            });
+        </script>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <script>
+            // Responsive mobile toggle menu
+            document.addEventListener("DOMContentLoaded", () => {
+                const toggle = document.getElementById("mobile-drawer-toggle");
+                const sidebar = document.getElementById("app-sidebar-left");
+                const overlay = document.getElementById("app-sidebar-overlay");
+
+                if (toggle && sidebar && overlay) {
+                    toggle.addEventListener("click", () => {
+                        sidebar.classList.add("active");
+                        overlay.classList.add("active");
+                    });
+
+                    overlay.addEventListener("click", () => {
+                        sidebar.classList.remove("active");
+                        overlay.classList.remove("active");
+                    });
+                }
+            });
+        </script>
+    {% endif %}
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

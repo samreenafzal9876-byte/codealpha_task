@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Orders - Aura Store{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-history-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .order-history-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="h2 fw-bold text-dark mb-4" style="font-family: 'Outfit', sans-serif;">My Orders</h1>
+    
+    {% if orders %}
+        <div class="d-flex flex-column gap-4">
+            {% for order in orders %}
+                <div class="order-history-card shadow-sm">
+                    <!-- Header Summary -->
+                    <div class="row align-items-center justify-content-between pb-3 border-bottom mb-3 g-3">
+                        <div class="col-sm-auto">
+                            <div class="row g-3">
+                                <div class="col-auto">
+                                    <span class="text-muted small d-block">Order Placed</span>
+                                    <span class="fw-semibold text-dark">{{ order.created|date:"F d, Y" }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="text-muted small d-block">Order ID</span>
+                                    <span class="fw-bold text-dark">#{{ order.id }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="text-muted small d-block">Total Amount</span>
+                                    <span class="fw-bold text-primary">${{ order.get_total_cost }}</span>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="text-muted small d-block">Recipient</span>
+                                    <span class="fw-semibold text-dark">{{ order.first_name }} {{ order.last_name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-auto text-sm-end">
+                            <div class="d-flex align-items-center gap-3 justify-content-sm-end">
+                                <!-- Paid/Unpaid Status -->
+                                {% if order.paid %}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 small rounded-pill">Paid</span>
+                                {% else %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1.5 small rounded-pill">Pending</span>
+                                {% endif %}
+                                
+                                <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-sm btn-outline-secondary px-3 py-1.5"><i class="bi bi-file-earmark-text me-1"></i>View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Items Preview row -->
+                    <div class="row g-2">
+                        {% for item in order.items.all %}
+                            <div class="col-auto">
+                                <div class="bg-light p-2 rounded-3 border d-flex align-items-center gap-2" style="max-width: 260px;">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid rounded" style="width: 40px; height: 40px; object-fit: contain;">
+                                    {% else %}
+                                        <div class="bg-white rounded border d-flex align-items-center justify-content-center text-muted fw-bold small" style="width: 40px; height: 40px;">AURA</div>
+                                    {% endif %}
+                                    <div class="overflow-hidden">
+                                        <h6 class="fw-semibold text-dark mb-0 text-truncate" style="max-width: 160px; font-size: 0.85rem;" title="{{ item.product.name }}">{{ item.product.name }}</h6>
+                                        <span class="text-muted small" style="font-size: 0.75rem;">Qty: {{ item.quantity }} &times; ${{ item.price }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5 bg-white rounded-4 border shadow-sm my-5">
+            <div class="d-inline-flex align-items-center justify-content-center bg-light text-muted rounded-circle mb-3" style="width: 80px; height: 80px;">
+                <i class="bi bi-bag-x fs-1"></i>
+            </div>
+            <h2 class="fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">No orders yet</h2>
+            <p class="text-muted mb-4">It looks like you haven't placed any orders with us yet.</p>
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary px-4 py-2.5">Explore Our Shop</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

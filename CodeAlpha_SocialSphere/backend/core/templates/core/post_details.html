@@ -1,0 +1,182 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Post Details - SocialSphere{% endblock %}
+{% block layout_class %}no-right-sidebar{% endblock %}
+
+{% block content %}
+<main class="main-content" style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
+    <div class="feed-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="feed-title" style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">Post Details</h2>
+        <a href="{% url 'feed' %}" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-arrow-left"></i> Back to Feed
+        </a>
+    </div>
+
+    <!-- Post Card -->
+    <div class="card post-card" style="margin-bottom: 24px;">
+        <div class="post-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="post-author" style="display: flex; align-items: center; gap: 12px;">
+                <a href="{% url 'profile' username=post.user.username %}">
+                    {% if post.user.profile.profile_picture %}
+                        <img src="{{ post.user.profile.profile_picture.url }}" alt="{{ post.user.username }}" class="post-author-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="post-author-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    {% endif %}
+                </a>
+                <div class="post-author-meta">
+                    <a href="{% url 'profile' username=post.user.username %}" class="post-author-name" style="font-weight: 600; color: var(--text-primary); text-decoration: none;">
+                        {{ post.user.first_name|default:post.user.username }}
+                    </a>
+                    <span class="post-author-handle" style="display: block; font-size: 0.8rem; color: var(--text-muted);">
+                        @{{ post.user.username }}
+                    </span>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="post-time" style="font-size: 0.8rem; color: var(--text-muted);">
+                    {{ post.created_date|timesince }} ago
+                </span>
+                {% if post.user == request.user %}
+                    <div style="display: flex; gap: 6px;">
+                        <a href="{% url 'edit_post' pk=post.pk %}" class="btn btn-sm btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        <a href="{% url 'delete_post' pk=post.pk %}" class="btn btn-sm" style="padding: 4px 8px; font-size: 0.75rem; background: var(--danger); color: white;">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="post-content" style="color: var(--text-primary); line-height: 1.6; font-size: 1.05rem; margin-bottom: 16px; white-space: pre-wrap;">{{ post.caption }}</div>
+
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post image" class="post-image" style="width: 100%; border-radius: var(--radius-md); max-height: 400px; object-fit: cover; margin-bottom: 16px;">
+        {% endif %}
+
+        <div class="post-actions" style="display: flex; gap: 20px; border-top: 1px solid var(--border-color); padding-top: 12px; color: var(--text-muted); font-size: 0.9rem;">
+            <button onclick="toggleLike({{ post.pk }}, this)" style="background: none; border: none; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: inherit;">
+                {% if liked %}
+                    <i class="fa-solid fa-heart" style="color: var(--danger);"></i>
+                {% else %}
+                    <i class="fa-regular fa-heart"></i>
+                {% endif %}
+                <span class="like-count">{{ post.likes.count }}</span> Likes
+            </button>
+            <span><i class="fa-regular fa-comment"></i> {{ comments.count }} Comments</span>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <h3 class="details-section-title" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center;">
+        <i class="fa-regular fa-comments" style="margin-right:8px; color:var(--primary);"></i>
+        Comments ({{ comments.count }})
+    </h3>
+
+    <!-- Comment Input Row -->
+    <div class="comment-input-row" style="margin-bottom: 24px; background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+        <form method="post" action="{% url 'post_detail' pk=post.pk %}" style="display: flex; gap: 12px; align-items: flex-start; width: 100%;">
+            {% csrf_token %}
+            {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }}" class="user-avatar-sm" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="user-avatar-sm" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+            {% endif %}
+            <div style="flex:1; display:flex; gap:10px;">
+                {{ form.comment_text }}
+                <button type="submit" class="btn btn-primary btn-sm" style="align-self:flex-end; padding: 10px 14px;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Comments List -->
+    <div class="comments-list" id="comments-list-container" style="display: flex; flex-direction: column; gap: 16px;">
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <a href="{% url 'profile' username=comment.user.username %}">
+                                {% if comment.user.profile.profile_picture %}
+                                    <img src="{{ comment.user.profile.profile_picture.url }}" alt="{{ comment.user.username }}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
+                                {% endif %}
+                            </a>
+                            <div>
+                                <a href="{% url 'profile' username=comment.user.username %}" style="font-weight: 600; color: var(--text-primary); text-decoration: none; font-size: 0.9rem;">
+                                    {{ comment.user.first_name|default:comment.user.username }}
+                                </a>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 6px;">
+                                    {{ comment.created_date|timesince }} ago
+                                </span>
+                            </div>
+                        </div>
+                        {% if comment.user == request.user %}
+                            <a href="{% url 'delete_comment' pk=comment.pk %}" style="color: var(--danger); font-size: 0.8rem; text-decoration: none;" onclick="return confirm('Delete this comment?');">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; padding-left: 38px;">
+                        {{ comment.comment_text }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div style="text-align: center; color: var(--text-muted); padding: 20px 0;">
+                No comments yet. Be the first to share your thoughts!
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleLike(postId, btn) {
+        fetch(`/post/${postId}/like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const icon = btn.querySelector('i');
+            const count = btn.querySelector('.like-count');
+            if (data.liked) {
+                icon.className = 'fa-solid fa-heart';
+                icon.style.color = 'var(--danger)';
+            } else {
+                icon.className = 'fa-regular fa-heart';
+                icon.style.color = '';
+            }
+            count.textContent = data.likes_count;
+        })
+        .catch(err => console.error("Error toggling like:", err));
+    }
+</script>
+<style>
+    .comment-input-row textarea {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--bg-body);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.3s;
+    }
+    .comment-input-row textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+</style>
+{% endblock %}

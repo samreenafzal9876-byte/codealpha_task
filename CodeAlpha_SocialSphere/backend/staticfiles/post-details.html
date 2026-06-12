@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Details - SocialSphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout" class="no-right-sidebar">
+        <!-- Header & Sidebar injected by layout.js -->
+
+        <main class="main-content">
+            <div class="feed-header">
+                <h2 class="feed-title">Post Details</h2>
+                <a href="feed.html" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Feed
+                </a>
+            </div>
+
+            <!-- Post Card (rendered by JS) -->
+            <div id="post-detail-card">
+                <!-- Post will be dynamically injected here -->
+            </div>
+
+            <!-- Comments Section -->
+            <h3 class="details-section-title" id="comments-section-title">
+                <i class="fa-regular fa-comments" style="margin-right:8px; color:var(--comment);"></i>
+                Comments
+            </h3>
+
+            <!-- Comment Input Row -->
+            <div class="comment-input-row">
+                <img src="" alt="" class="user-avatar-sm" id="comment-user-avatar">
+                <div style="flex:1; display:flex; gap:10px;">
+                    <textarea id="comment-textarea" class="input-field" placeholder="Write a comment…" style="min-height:60px; flex:1;"></textarea>
+                    <button class="btn btn-primary btn-sm" id="submit-comment-btn" style="align-self:flex-end;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Comments List -->
+            <div class="comments-list" id="comments-list-container">
+                <!-- Comments rendered by JS -->
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/post-details.js"></script>
+</body>
+</html>

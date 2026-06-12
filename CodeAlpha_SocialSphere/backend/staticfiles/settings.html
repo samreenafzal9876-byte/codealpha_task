@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - SocialSphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout" class="no-right-sidebar">
+        <!-- Header & Sidebar injected by layout.js -->
+        <main class="main-content">
+            <div class="feed-header">
+                <h2 class="feed-title">Settings</h2>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- A) Appearance Section                     -->
+            <!-- ========================================= -->
+            <div class="card">
+                <div class="settings-section">
+                    <h3 class="settings-title"><i class="fa-solid fa-palette" style="margin-right:8px;"></i> Appearance</h3>
+
+                    <!-- Theme Toggle (Dark / Light) -->
+                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Theme Mode</p>
+                    <div class="theme-options" id="theme-toggle-group">
+                        <div class="theme-card" data-theme="dark" id="theme-dark">
+                            <i class="fa-solid fa-moon" style="font-size:1.5rem; margin-bottom:8px; display:block;"></i>
+                            Dark
+                        </div>
+                        <div class="theme-card" data-theme="light" id="theme-light">
+                            <i class="fa-solid fa-sun" style="font-size:1.5rem; margin-bottom:8px; display:block;"></i>
+                            Light
+                        </div>
+                    </div>
+
+                    <!-- Color Presets -->
+                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Accent Color</p>
+                    <div class="color-presets-row" id="color-presets-group">
+                        <div class="color-dot indigo" data-accent="indigo" title="Indigo"></div>
+                        <div class="color-dot emerald" data-accent="emerald" title="Emerald"></div>
+                        <div class="color-dot crimson" data-accent="crimson" title="Crimson"></div>
+                        <div class="color-dot amber" data-accent="amber" title="Amber"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- B) Privacy & Notifications Section        -->
+            <!-- ========================================= -->
+            <div class="card">
+                <div class="settings-section">
+                    <h3 class="settings-title"><i class="fa-solid fa-shield-halved" style="margin-right:8px;"></i> Privacy & Notifications</h3>
+
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Private Account</span>
+                            <span class="toggle-desc">Only approved followers can see your posts.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-private">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Email Notifications</span>
+                            <span class="toggle-desc">Receive email alerts for likes, comments, and follows.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-email" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div class="toggle-info">
+                            <span class="toggle-title">Push Notifications</span>
+                            <span class="toggle-desc">Receive browser push notifications for activity.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-push" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================= -->
+            <!-- C) Account Section                        -->
+            <!-- ========================================= -->
+            <div class="card">
+                <div class="settings-section">
+                    <h3 class="settings-title"><i class="fa-solid fa-user-gear" style="margin-right:8px;"></i> Account</h3>
+
+                    <!-- Change Password (Simulated) -->
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="input-field" id="current-password" placeholder="Enter current password" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="input-field" id="new-password" placeholder="Enter new password" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="input-field" id="confirm-password" placeholder="Confirm new password" disabled>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" id="change-password-btn" style="margin-bottom:24px;">
+                        <i class="fa-solid fa-key"></i> Change Password
+                    </button>
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:32px;">Password change is simulated and not functional in this demo.</p>
+
+                    <!-- Danger Zone -->
+                    <h3 class="settings-title" style="color:var(--error);"><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;"></i> Danger Zone</h3>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary" id="logout-settings-btn">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                        <button class="btn btn-danger" id="delete-account-btn">
+                            <i class="fa-solid fa-trash"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

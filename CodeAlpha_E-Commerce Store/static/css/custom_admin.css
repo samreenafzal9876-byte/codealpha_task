@@ -1,0 +1,614 @@
+/* Import Google Fonts - Inter & Outfit */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+/* Color Variables and Base Overrides */
+:root {
+    --primary: #6366f1 !important; /* Indigo 500 */
+    --primary-fg: #ffffff !important;
+    --primary-hover: #4f46e5 !important; /* Indigo 600 */
+    --secondary: #818cf8 !important; /* Indigo 400 */
+    --accent: #10b981 !important; /* Emerald 500 */
+    --header-bg: #0f172a !important; /* Slate 900 */
+    --header-color: #f8fafc !important;
+    --header-link-color: #cbd5e1 !important;
+    --breadcrumbs-bg: #f8fafc !important;
+    --breadcrumbs-link-color: #6366f1 !important;
+    --breadcrumbs-fg: #64748b !important;
+    --body-bg: #f8fafc !important; /* Soft white/gray background */
+    --body-fg: #334155 !important; /* Slate 700 */
+    --border-color: #e2e8f0 !important;
+    --sidebar-bg: #0f172a !important; /* Slate 900 for a consistent dark sidebar */
+    --sidebar-fg: #94a3b8 !important;
+    --sidebar-active-bg: #1e293b !important;
+    --sidebar-active-fg: #ffffff !important;
+}
+
+/* Base resets & typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    background-color: var(--body-bg) !important;
+    color: var(--body-fg) !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .module h2, .module caption {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 600 !important;
+}
+
+/* Header styling */
+#header {
+    background: var(--header-bg) !important;
+    color: var(--header-color) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 0.75rem 2rem !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#branding h1 {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 1.4rem !important;
+    letter-spacing: -0.5px !important;
+    background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0 !important;
+}
+
+#branding h1 a {
+    color: inherit !important;
+}
+
+#user-tools {
+    font-size: 0.85rem !important;
+    color: var(--header-link-color) !important;
+    font-weight: 500 !important;
+}
+
+#user-tools a {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    padding: 0.4rem 0.75rem !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    margin-left: 0.3rem !important;
+}
+
+#user-tools a:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    background: var(--breadcrumbs-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 0.75rem 2rem !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    color: var(--breadcrumbs-fg) !important;
+}
+
+.breadcrumbs a {
+    color: var(--breadcrumbs-link-color) !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease !important;
+}
+
+.breadcrumbs a:hover {
+    color: var(--primary-hover) !important;
+    text-decoration: underline !important;
+}
+
+/* Layout container adjustments */
+#main {
+    display: flex !important;
+    min-height: calc(100vh - 110px) !important;
+}
+
+/* Sidebar Navigation Styling */
+#nav-sidebar {
+    background-color: var(--sidebar-bg) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    width: 260px !important;
+    flex-shrink: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 1.5rem 1rem !important;
+    box-sizing: border-box !important;
+}
+
+#nav-sidebar .app-auth, #nav-sidebar .module {
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 1.5rem !important;
+}
+
+#nav-sidebar table {
+    width: 100% !important;
+    background: transparent !important;
+}
+
+#nav-sidebar th, #nav-sidebar td {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+#nav-sidebar caption {
+    background: transparent !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    color: #64748b !important; /* Subtle gray for category titles */
+    text-align: left !important;
+    margin-bottom: 0.5rem !important;
+    border: none !important;
+}
+
+#nav-sidebar caption a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+#nav-sidebar tr {
+    display: block !important;
+    margin-bottom: 0.35rem !important;
+}
+
+#nav-sidebar tr td a {
+    display: block !important;
+    padding: 0.65rem 1rem !important;
+    color: var(--sidebar-fg) !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+}
+
+#nav-sidebar tr td a:hover {
+    background-color: var(--sidebar-active-bg) !important;
+    color: var(--sidebar-active-fg) !important;
+    padding-left: 1.25rem !important;
+}
+
+/* Style current active item if matched */
+#nav-sidebar tr.model-active td a {
+    background-color: var(--primary) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Hide toggle sidebar button or style it beautifully */
+.navigation-sidebar-toggle {
+    background: var(--header-bg) !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    padding: 0.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.navigation-sidebar-toggle:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Content Area */
+#content {
+    flex-grow: 1 !important;
+    padding: 2rem !important;
+    background: var(--body-bg) !important;
+    box-sizing: border-box !important;
+}
+
+/* Dashboard Cards (Custom Admin Index) */
+#content-main > div[style*="grid"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+    gap: 1.5rem !important;
+    margin-bottom: 2.5rem !important;
+}
+
+#content-main > div[style*="grid"] > div {
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px !important;
+    padding: 1.75rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01), 0 10px 15px -3px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#content-main > div[style*="grid"] > div:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
+    border-color: #cbd5e1 !important;
+}
+
+#content-main > div[style*="grid"] > div::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 4px !important;
+    height: 100% !important;
+}
+
+/* Individual card accent borders */
+#content-main > div[style*="grid"] > div:nth-child(1)::before { background: var(--primary) !important; }
+#content-main > div[style*="grid"] > div:nth-child(2)::before { background: #10b981 !important; }
+#content-main > div[style*="grid"] > div:nth-child(3)::before { background: #8b5cf6 !important; }
+#content-main > div[style*="grid"] > div:nth-child(4)::before { background: #f97316 !important; }
+
+/* Custom modules table listings on home */
+.dashboard .module {
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03) !important;
+    margin-bottom: 2rem !important;
+    overflow: hidden !important;
+}
+
+.dashboard .module table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+.dashboard .module table th, .dashboard .module table td {
+    padding: 1rem 1.25rem !important;
+}
+
+.dashboard .module caption {
+    background: #f8fafc !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 1rem 1.25rem !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.dashboard .module caption a {
+    color: var(--primary) !important;
+}
+
+/* Table styling for listings */
+#changelist {
+    background: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03) !important;
+    overflow: hidden !important;
+}
+
+#changelist-form {
+    background: #ffffff !important;
+}
+
+.results table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+.results table th {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.results table tbody tr {
+    transition: background-color 0.2s ease !important;
+}
+
+.results table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+.results table td, .results table th {
+    padding: 0.95rem 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    font-size: 0.9rem !important;
+    vertical-align: middle !important;
+}
+
+/* Actions and Search container styling */
+#changelist .actions {
+    background: #f8fafc !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.85rem !important;
+    color: #64748b !important;
+}
+
+#changelist-search {
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 1.25rem !important;
+}
+
+#searchbar {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+    width: 280px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+#searchbar:focus {
+    outline: none !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+#changelist-search input[type="submit"] {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.55rem 1.25rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease !important;
+    margin-left: 0.5rem !important;
+}
+
+#changelist-search input[type="submit"]:hover {
+    background: var(--primary-hover) !important;
+}
+
+/* Filters sidebar styling on the right */
+#changelist-filter {
+    background: #ffffff !important;
+    border-left: 1px solid var(--border-color) !important;
+    width: 240px !important;
+}
+
+#changelist-filter h2 {
+    font-size: 0.95rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    background: #f8fafc !important;
+    margin: 0 !important;
+}
+
+#changelist-filter h3 {
+    font-size: 0.85rem !important;
+    padding: 0.75rem 1rem 0.25rem !important;
+    color: #64748b !important;
+    margin: 0 !important;
+}
+
+#changelist-filter ul {
+    padding: 0 1rem 1rem !important;
+    margin: 0 !important;
+}
+
+#changelist-filter li a {
+    color: #475569 !important;
+    font-size: 0.85rem !important;
+    text-decoration: none !important;
+    display: block !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+#changelist-filter li a:hover {
+    background: #f1f5f9 !important;
+    color: var(--primary) !important;
+}
+
+#changelist-filter li.selected a {
+    background: rgba(79, 70, 229, 0.08) !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+}
+
+/* Buttons and Submit Rows */
+.button, input[type=submit], input[type=button], .submit-row a.deletelink {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 1.25rem !important;
+    font-size: 0.875rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    text-transform: none !important;
+    border: none !important;
+}
+
+.button.default, input[type=submit].default {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+.button.default:hover, input[type=submit].default:hover {
+    background: var(--primary-hover) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1) !important;
+}
+
+.button, input[type=submit] {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #334155 !important;
+}
+
+.button:hover, input[type=submit]:hover {
+    background: #f8fafc !important;
+    border-color: #94a3b8 !important;
+}
+
+.submit-row a.deletelink {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+.submit-row a.deletelink:hover {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+}
+
+.submit-row {
+    background: #f8fafc !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    margin-top: 2rem !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0.5rem !important;
+}
+
+/* Forms and Inputs */
+.form-row {
+    padding: 1.25rem 0 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.form-row label {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+}
+
+input[type=text], input[type=password], input[type=email], input[type=number], select, textarea {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.9rem !important;
+    color: #334155 !important;
+    width: 320px !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.2s ease !important;
+}
+
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=number]:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Login Page Styling */
+.login {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 100vh !important;
+    margin: 0 !important;
+}
+
+.login #container {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 20px !important;
+    padding: 2.5rem !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+.login #header {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 2rem !important;
+    justify-content: center !important;
+}
+
+.login #header #branding h1 {
+    font-size: 2rem !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.login #content {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.login #content-main {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.login .form-row {
+    border-bottom: none !important;
+    padding: 0.75rem 0 !important;
+}
+
+.login .form-row label {
+    color: #94a3b8 !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+    font-size: 0.85rem !important;
+}
+
+.login input[type=text], .login input[type=password] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 10px !important;
+}
+
+.login input[type=text]:focus, .login input[type=password]:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--primary) !important;
+}
+
+.login .submit-row {
+    background: transparent !important;
+    border: none !important;
+    padding: 1.5rem 0 0 !important;
+    margin: 0 !important;
+}
+
+.login .submit-row input[type=submit] {
+    width: 100% !important;
+    padding: 0.75rem !important;
+    font-size: 1rem !important;
+}
+
+/* Make it responsive */
+@media (max-width: 768px) {
+    #main {
+        flex-direction: column !important;
+    }
+    #nav-sidebar {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+}

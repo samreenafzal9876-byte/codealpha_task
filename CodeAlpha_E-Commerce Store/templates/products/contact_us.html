@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Aura Store{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row g-5">
+        <!-- Contact Form (col-md-7) -->
+        <div class="col-lg-7">
+            <div class="card p-4 border-0 shadow-sm bg-white">
+                <h1 class="h2 fw-bold mb-3 text-dark" style="font-family: 'Outfit', sans-serif;">Get in Touch</h1>
+                <p class="text-muted small mb-4">Have questions about an order, product specs, or partnerships? Write us a message, and our concierge team will respond within 4 hours.</p>
+                
+                <form action="#" method="get" onsubmit="event.preventDefault(); alert('Thank you! Your message has been sent successfully. We will email you back shortly.');">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label fw-medium">Your Name</label>
+                            <input type="text" class="form-control" id="name" required placeholder="John Doe">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label fw-medium">Email Address</label>
+                            <input type="email" class="form-control" id="email" required placeholder="john@example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subject" class="form-label fw-medium">Subject</label>
+                        <input type="text" class="form-control" id="subject" required placeholder="How can we help?">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="message" class="form-label fw-medium">Message Details</label>
+                        <textarea class="form-control" id="message" rows="5" required placeholder="Type your message details here..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact Info & Map (col-md-5) -->
+        <div class="col-lg-5">
+            <div class="card p-4 border-0 shadow-sm bg-white mb-4">
+                <h3 class="fw-bold mb-4" style="font-family: 'Outfit', sans-serif;">Contact Information</h3>
+                
+                <div class="d-flex mb-3 align-items-start">
+                    <div class="text-primary me-3 mt-1"><i class="bi bi-geo-alt fs-4"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Office Headquarters</h6>
+                        <p class="text-muted small mb-0">123 Tech Lane, Suite 400<br>San Francisco, CA 94016</p>
+                    </div>
+                </div>
+
+                <div class="d-flex mb-3 align-items-start">
+                    <div class="text-primary me-3 mt-1"><i class="bi bi-envelope fs-4"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Email Concierge</h6>
+                        <p class="text-muted small mb-0"><a href="mailto:support@aurastore.com" class="text-decoration-none">support@aurastore.com</a><br><a href="mailto:sales@aurastore.com" class="text-decoration-none">sales@aurastore.com</a></p>
+                    </div>
+                </div>
+
+                <div class="d-flex mb-0 align-items-start">
+                    <div class="text-primary me-3 mt-1"><i class="bi bi-telephone fs-4"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Direct Hotline</h6>
+                        <p class="text-muted small mb-0">+1 (800) 555-0199<br>Mon-Fri, 9:00 AM - 6:00 PM PST</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Mockup -->
+            <div class="card border-0 shadow-sm overflow-hidden" style="height: 250px;">
+                <div class="w-100 h-100 bg-light d-flex flex-column align-items-center justify-content-center border text-center p-4">
+                    <i class="bi bi-map fs-1 text-muted mb-2"></i>
+                    <h5 class="fw-bold text-dark">Office Location Map</h5>
+                    <p class="text-muted small mb-0">123 Tech Lane, San Francisco, CA</p>
+                    <span class="badge bg-secondary mt-2">Map Interface Mocked</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

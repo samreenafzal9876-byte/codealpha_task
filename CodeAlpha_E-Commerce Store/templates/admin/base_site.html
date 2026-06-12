@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="branding">
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">AURA STORE ADMIN</a></h1>
+</div>
+{% endblock %}

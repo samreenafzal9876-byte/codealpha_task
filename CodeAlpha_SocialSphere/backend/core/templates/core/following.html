@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Users Followed by {{ profile_user.first_name|default:profile_user.username }} - SocialSphere{% endblock %}
+{% block layout_class %}no-right-sidebar{% endblock %}
+
+{% block content %}
+<main class="main-content" style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
+    <div class="feed-header" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="feed-title" style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">Following</h2>
+        <a href="{% url 'profile' username=profile_user.username %}" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-arrow-left"></i> Back to Profile
+        </a>
+    </div>
+
+    <div class="card" style="padding: 20px;">
+        {% if following %}
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                {% for target in following %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <a href="{% url 'profile' username=target.username %}">
+                                {% if target.profile.profile_picture %}
+                                    <img src="{{ target.profile.profile_picture.url }}" alt="{{ target.username }}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
+                                {% endif %}
+                            </a>
+                            <div>
+                                <a href="{% url 'profile' username=target.username %}" style="font-weight: 600; color: var(--text-primary); text-decoration: none; display: block;">
+                                    {{ target.first_name|default:target.username }}
+                                </a>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">@{{ target.username }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'profile' username=target.username %}" class="btn btn-sm btn-secondary">
+                            View Profile
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 24px 0; color: var(--text-muted);">
+                <i class="fa-solid fa-user-plus" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+                Not following anyone yet.
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

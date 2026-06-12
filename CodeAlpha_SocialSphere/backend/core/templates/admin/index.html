@@ -1,0 +1,822 @@
+{% extends 'admin/base_site.html' %}
+{% load static i18n %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="dashboard-wrapper">
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- LIVE TICKER BAR                                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-ticker" role="marquee" aria-label="Live platform status">
+    <div class="dash-ticker__label"><i class="fas fa-bolt"></i>&nbsp;Live</div>
+    <div class="dash-ticker__track">
+      <span class="dash-ticker__content" id="dash-ticker-content">
+        🟢&nbsp;All Systems Operational &nbsp;•&nbsp;
+        👥&nbsp;{{ total_users|default:"0" }} Registered Users &nbsp;•&nbsp;
+        📝&nbsp;{{ total_posts|default:"0" }} Posts Published &nbsp;•&nbsp;
+        ❤️&nbsp;{{ total_likes|default:"0" }} Total Likes &nbsp;•&nbsp;
+        💬&nbsp;{{ total_comments|default:"0" }} Comments &nbsp;•&nbsp;
+        👣&nbsp;{{ total_follows|default:"0" }} Follows &nbsp;•&nbsp;
+        📊&nbsp;Engagement Rate: {{ engagement_rate|default:"0" }}% &nbsp;•&nbsp;
+        🚀&nbsp;SocialSphere Mission Control v3.0 &nbsp;•&nbsp;
+        ✨&nbsp;Welcome, {{ request.user.get_short_name|default:request.user.username }}
+      </span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- WELCOME HEADER                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <header id="dashboard-welcome" class="dash-welcome">
+    <canvas id="particles-canvas"></canvas>
+    <div class="dash-welcome__text">
+      <h1 class="dash-welcome__title">
+        Welcome back, <span class="dash-welcome__name">{{ request.user.get_short_name|default:request.user.username }}</span> 👋
+      </h1>
+      <p class="dash-welcome__subtitle">
+        Here's what's happening on <strong>SocialSphere</strong> today — your dashboard is live.
+      </p>
+    </div>
+    <div class="dash-welcome__right">
+      <div class="dash-welcome__online" id="online-indicator">
+        <span class="dash-welcome__online-dot"></span>
+        <span class="dash-welcome__online-text">Platform Online</span>
+      </div>
+      <div class="dash-welcome__date" id="dashboard-datetime">
+        <span class="dash-welcome__date-icon"><i class="fas fa-calendar-alt"></i></span>
+        <span id="dashboard-live-clock"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- STATS CARDS ROW (6-column grid)                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Platform Metrics</span>
+  </div>
+  <section id="stats-cards" class="dash-stats" aria-label="Platform statistics">
+    <div class="dash-stats__card dash-stats__card--users" id="stat-users">
+      <div class="dash-stats__icon-ring"><i class="fas fa-users"></i></div>
+      <div class="dash-stats__body">
+        <div class="dash-stats__top-row">
+          <span class="dash-stats__count" id="stat-users-count">{{ total_users|default:"0" }}</span>
+          <span class="dash-stats__growth dash-stats__growth--up"><i class="fas fa-arrow-up"></i> +12.5%</span>
+        </div>
+        <span class="dash-stats__label">Total Users</span>
+        <div class="dash-stats__sparkline">
+          <svg viewBox="0 0 80 24" preserveAspectRatio="none" class="dash-sparkline dash-sparkline--indigo">
+            <polyline points="0,20 10,16 20,18 30,12 40,14 50,8 60,10 70,4 80,6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,20 10,16 20,18 30,12 40,14 50,8 60,10 70,4 80,6 80,24 0,24" fill="url(#sparkGradIndigo)" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dash-stats__accent"></div>
+    </div>
+
+    <div class="dash-stats__card dash-stats__card--posts" id="stat-posts">
+      <div class="dash-stats__icon-ring"><i class="fas fa-newspaper"></i></div>
+      <div class="dash-stats__body">
+        <div class="dash-stats__top-row">
+          <span class="dash-stats__count" id="stat-posts-count">{{ total_posts|default:"0" }}</span>
+          <span class="dash-stats__growth dash-stats__growth--up"><i class="fas fa-arrow-up"></i> +8.3%</span>
+        </div>
+        <span class="dash-stats__label">Total Posts</span>
+        <div class="dash-stats__sparkline">
+          <svg viewBox="0 0 80 24" preserveAspectRatio="none" class="dash-sparkline dash-sparkline--emerald">
+            <polyline points="0,18 10,20 20,14 30,16 40,10 50,12 60,6 70,8 80,4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,18 10,20 20,14 30,16 40,10 50,12 60,6 70,8 80,4 80,24 0,24" fill="url(#sparkGradEmerald)" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dash-stats__accent"></div>
+    </div>
+
+    <div class="dash-stats__card dash-stats__card--comments" id="stat-comments">
+      <div class="dash-stats__icon-ring"><i class="fas fa-comments"></i></div>
+      <div class="dash-stats__body">
+        <div class="dash-stats__top-row">
+          <span class="dash-stats__count" id="stat-comments-count">{{ total_comments|default:"0" }}</span>
+          <span class="dash-stats__growth dash-stats__growth--up"><i class="fas fa-arrow-up"></i> +15.2%</span>
+        </div>
+        <span class="dash-stats__label">Total Comments</span>
+        <div class="dash-stats__sparkline">
+          <svg viewBox="0 0 80 24" preserveAspectRatio="none" class="dash-sparkline dash-sparkline--cyan">
+            <polyline points="0,22 10,18 20,20 30,14 40,16 50,10 60,12 70,6 80,8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,22 10,18 20,20 30,14 40,16 50,10 60,12 70,6 80,8 80,24 0,24" fill="url(#sparkGradCyan)" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dash-stats__accent"></div>
+    </div>
+
+    <div class="dash-stats__card dash-stats__card--likes" id="stat-likes">
+      <div class="dash-stats__icon-ring"><i class="fas fa-heart"></i></div>
+      <div class="dash-stats__body">
+        <div class="dash-stats__top-row">
+          <span class="dash-stats__count" id="stat-likes-count">{{ total_likes|default:"0" }}</span>
+          <span class="dash-stats__growth dash-stats__growth--up"><i class="fas fa-arrow-up"></i> +22.1%</span>
+        </div>
+        <span class="dash-stats__label">Total Likes</span>
+        <div class="dash-stats__sparkline">
+          <svg viewBox="0 0 80 24" preserveAspectRatio="none" class="dash-sparkline dash-sparkline--rose">
+            <polyline points="0,20 10,14 20,18 30,10 40,16 50,6 60,12 70,4 80,8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,20 10,14 20,18 30,10 40,16 50,6 60,12 70,4 80,8 80,24 0,24" fill="url(#sparkGradRose)" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dash-stats__accent"></div>
+    </div>
+
+    <div class="dash-stats__card dash-stats__card--follows" id="stat-follows">
+      <div class="dash-stats__icon-ring"><i class="fas fa-user-friends"></i></div>
+      <div class="dash-stats__body">
+        <div class="dash-stats__top-row">
+          <span class="dash-stats__count" id="stat-follows-count">{{ total_follows|default:"0" }}</span>
+          <span class="dash-stats__growth dash-stats__growth--up"><i class="fas fa-arrow-up"></i> +9.7%</span>
+        </div>
+        <span class="dash-stats__label">Total Follows</span>
+        <div class="dash-stats__sparkline">
+          <svg viewBox="0 0 80 24" preserveAspectRatio="none" class="dash-sparkline dash-sparkline--purple">
+            <polyline points="0,16 10,20 20,12 30,18 40,8 50,14 60,6 70,10 80,4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,16 10,20 20,12 30,18 40,8 50,14 60,6 70,10 80,4 80,24 0,24" fill="url(#sparkGradPurple)" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dash-stats__accent"></div>
+    </div>
+
+    <div class="dash-stats__card dash-stats__card--engagement" id="stat-engagement">
+      <div class="dash-stats__icon-ring"><i class="fas fa-chart-line"></i></div>
+      <div class="dash-stats__body">
+        <div class="dash-stats__top-row">
+          <span class="dash-stats__count dash-stats__count--pct" id="stat-engagement-count">{{ engagement_rate|default:"0" }}</span>
+          <span class="dash-stats__growth dash-stats__growth--up"><i class="fas fa-arrow-up"></i> +3.4%</span>
+        </div>
+        <span class="dash-stats__label">Engagement Rate</span>
+        <div class="dash-stats__sparkline">
+          <svg viewBox="0 0 80 24" preserveAspectRatio="none" class="dash-sparkline dash-sparkline--amber">
+            <polyline points="0,18 10,14 20,16 30,10 40,12 50,8 60,14 70,6 80,4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="0,18 10,14 20,16 30,10 40,12 50,8 60,14 70,6 80,4 80,24 0,24" fill="url(#sparkGradAmber)" opacity="0.35"/>
+          </svg>
+        </div>
+      </div>
+      <div class="dash-stats__accent"></div>
+    </div>
+  </section>
+
+  <!-- SVG Gradient Defs for Sparklines + Health Rings -->
+  <svg width="0" height="0" style="position:absolute;pointer-events:none;">
+    <defs>
+      <linearGradient id="sparkGradIndigo"  x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0"/></linearGradient>
+      <linearGradient id="sparkGradEmerald" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/></linearGradient>
+      <linearGradient id="sparkGradCyan"    x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/></linearGradient>
+      <linearGradient id="sparkGradRose"    x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#f43f5e" stop-opacity="0"/></linearGradient>
+      <linearGradient id="sparkGradPurple"  x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#a855f7" stop-opacity="0"/></linearGradient>
+      <linearGradient id="sparkGradAmber"   x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient>
+      <!-- Health ring gradients -->
+      <linearGradient id="gradCPU"    x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#818cf8"/></linearGradient>
+      <linearGradient id="gradMEM"    x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>
+      <linearGradient id="gradDISK"   x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#34d399"/></linearGradient>
+      <linearGradient id="gradUPTIME" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0891b2"/><stop offset="100%" stop-color="#22d3ee"/></linearGradient>
+    </defs>
+  </svg>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- PLATFORM PULSE STRIP                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Platform Pulse</span>
+  </div>
+  <div class="dash-pulse">
+    <div class="dash-pulse__item dash-pulse__item--velocity">
+      <div class="dash-pulse__icon"><i class="fas fa-tachometer-alt"></i></div>
+      <div class="dash-pulse__body">
+        <div class="dash-pulse__label">Posts / User</div>
+        <div class="dash-pulse__value" id="pulse-velocity">—</div>
+        <div class="dash-pulse__sub">Average content velocity</div>
+      </div>
+    </div>
+    <div class="dash-pulse__item dash-pulse__item--retention">
+      <div class="dash-pulse__icon"><i class="fas fa-sync-alt"></i></div>
+      <div class="dash-pulse__body">
+        <div class="dash-pulse__label">Interactions / Post</div>
+        <div class="dash-pulse__value" id="pulse-retention">—</div>
+        <div class="dash-pulse__sub">Avg likes + comments per post</div>
+      </div>
+    </div>
+    <div class="dash-pulse__item dash-pulse__item--viral">
+      <div class="dash-pulse__icon"><i class="fas fa-fire-alt"></i></div>
+      <div class="dash-pulse__body">
+        <div class="dash-pulse__label">Follow Ratio</div>
+        <div class="dash-pulse__value" id="pulse-viral">—</div>
+        <div class="dash-pulse__sub">Follows per registered user</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- CHARTS ROW                                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Analytics</span>
+  </div>
+  <div class="dash-charts-row">
+    <section id="activity-chart-section" class="dash-chart" aria-label="Platform activity chart">
+      <div class="dash-chart__header">
+        <h2 class="dash-chart__title"><i class="fas fa-chart-area"></i> Platform Activity</h2>
+        <span class="dash-chart__badge">Last 7 Days</span>
+      </div>
+      <div class="dash-chart__canvas-wrap">
+        <canvas id="activityChart"
+                data-labels='{{ chart_labels|default:"[]" }}'
+                data-values='{{ chart_data|default:"[]" }}'
+                data-values-comments='{{ chart_data_comments|default:"[]" }}'
+                height="310"></canvas>
+      </div>
+    </section>
+
+    <section id="donut-chart-section" class="dash-chart dash-chart--donut" aria-label="Content distribution">
+      <div class="dash-chart__header">
+        <h2 class="dash-chart__title"><i class="fas fa-chart-pie"></i> Distribution</h2>
+        <span class="dash-chart__badge">All Time</span>
+      </div>
+      <div class="dash-chart__canvas-wrap dash-chart__canvas-wrap--donut">
+        <canvas id="donutChart"
+                data-posts="{{ total_posts|default:'0' }}"
+                data-comments="{{ total_comments|default:'0' }}"
+                data-likes="{{ total_likes|default:'0' }}"
+                height="270"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SYSTEM HEALTH                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">System Health</span>
+  </div>
+  <section id="system-health" class="dash-health" aria-label="System health">
+    <div class="dash-panel__header">
+      <h2 class="dash-panel__title"><i class="fas fa-heartbeat"></i> System Status</h2>
+    </div>
+    <div class="dash-health__grid">
+      <div class="dash-health__item">
+        <div class="dash-health__ring">
+          <svg viewBox="0 0 100 100" class="dash-health__svg">
+            <circle class="dash-health__track" cx="50" cy="50" r="42"/>
+            <circle class="dash-health__fill dash-health__fill--cpu" cx="50" cy="50" r="42"
+                    stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          </svg>
+          <span class="dash-health__pct">42%</span>
+        </div>
+        <span class="dash-health__label">CPU Usage</span>
+        <span class="dash-health__status dash-health__status--good">Healthy</span>
+      </div>
+      <div class="dash-health__item">
+        <div class="dash-health__ring">
+          <svg viewBox="0 0 100 100" class="dash-health__svg">
+            <circle class="dash-health__track" cx="50" cy="50" r="42"/>
+            <circle class="dash-health__fill dash-health__fill--mem" cx="50" cy="50" r="42"
+                    stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          </svg>
+          <span class="dash-health__pct">67%</span>
+        </div>
+        <span class="dash-health__label">Memory</span>
+        <span class="dash-health__status dash-health__status--warn">Moderate</span>
+      </div>
+      <div class="dash-health__item">
+        <div class="dash-health__ring">
+          <svg viewBox="0 0 100 100" class="dash-health__svg">
+            <circle class="dash-health__track" cx="50" cy="50" r="42"/>
+            <circle class="dash-health__fill dash-health__fill--disk" cx="50" cy="50" r="42"
+                    stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          </svg>
+          <span class="dash-health__pct">34%</span>
+        </div>
+        <span class="dash-health__label">Disk</span>
+        <span class="dash-health__status dash-health__status--good">Healthy</span>
+      </div>
+      <div class="dash-health__item">
+        <div class="dash-health__ring">
+          <svg viewBox="0 0 100 100" class="dash-health__svg">
+            <circle class="dash-health__track" cx="50" cy="50" r="42"/>
+            <circle class="dash-health__fill dash-health__fill--uptime" cx="50" cy="50" r="42"
+                    stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          </svg>
+          <span class="dash-health__pct">99%</span>
+        </div>
+        <span class="dash-health__label">Uptime</span>
+        <span class="dash-health__status dash-health__status--good">Excellent</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- TWO-COLUMN: RECENT POSTS + RECENT ACTIONS                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Activity Feed</span>
+  </div>
+  <div id="dashboard-columns" class="dash-columns">
+
+    <!-- Left — Recent Posts -->
+    <section id="recent-posts-section" class="dash-panel dash-panel--posts" aria-label="Recent posts">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title"><i class="fas fa-fire"></i> Recent Posts</h2>
+      </div>
+      <ul class="dash-posts" id="recent-posts-list">
+        {% for post in recent_posts %}
+        <li class="dash-posts__item" id="recent-post-{{ post.pk }}">
+          <div class="dash-posts__avatar">
+            {% if post.user.profile.profile_picture %}
+              <img src="{{ post.user.profile.profile_picture.url }}" alt="{{ post.user.username }}" class="dash-posts__avatar-img">
+            {% else %}
+              <div class="dash-posts__avatar-placeholder">{{ post.user.username|make_list|first|upper }}</div>
+            {% endif %}
+          </div>
+          <div class="dash-posts__content">
+            <div class="dash-posts__meta">
+              <strong class="dash-posts__author">@{{ post.user.username }}</strong>
+              <time class="dash-posts__time" datetime="{{ post.created_date|date:'c' }}">{{ post.created_date|timesince }} ago</time>
+            </div>
+            <p class="dash-posts__caption">{{ post.caption|truncatewords:18 }}</p>
+            <div class="dash-posts__stats">
+              <span class="dash-posts__stat dash-posts__stat--likes"><i class="fas fa-heart"></i> {{ post.likes.count }}</span>
+              <span class="dash-posts__stat dash-posts__stat--comments"><i class="fas fa-comment"></i> {{ post.comments.count }}</span>
+            </div>
+          </div>
+        </li>
+        {% empty %}
+        <li class="dash-posts__empty">
+          <i class="fas fa-inbox"></i>
+          <span>No posts yet — create one!</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- Right — Recent Actions -->
+    <section id="recent-actions-section" class="dash-panel dash-panel--actions" aria-label="Recent admin actions">
+      <div class="dash-panel__header">
+        <h2 class="dash-panel__title"><i class="fas fa-history"></i> Recent Actions</h2>
+      </div>
+      <div class="dash-actions" id="recent-actions-list">
+        {% load log %}
+        {% get_admin_log 10 as admin_log for_user user %}
+        {% if not admin_log %}
+          <div class="dash-actions__empty">
+            <i class="fas fa-clock"></i>
+            <span>No recent actions.</span>
+          </div>
+        {% else %}
+          <ul class="dash-actions__list">
+            {% for entry in admin_log %}
+            <li class="dash-actions__item">
+              <div class="dash-actions__icon
+                {% if entry.is_addition %} dash-actions__icon--add
+                {% elif entry.is_change %} dash-actions__icon--change
+                {% elif entry.is_deletion %} dash-actions__icon--delete
+                {% endif %}">
+                {% if entry.is_addition %}<i class="fas fa-plus"></i>
+                {% elif entry.is_change %}<i class="fas fa-pen"></i>
+                {% elif entry.is_deletion %}<i class="fas fa-trash"></i>
+                {% endif %}
+              </div>
+              <div class="dash-actions__body">
+                {% if entry.is_deletion or not entry.get_admin_url %}
+                  <span class="dash-actions__obj">{{ entry.object_repr }}</span>
+                {% else %}
+                  <a href="{{ entry.get_admin_url }}" class="dash-actions__obj-link">{{ entry.object_repr }}</a>
+                {% endif %}
+                <span class="dash-actions__type">{{ entry.content_type }}</span>
+                <time class="dash-actions__time">{{ entry.action_time|timesince }} ago</time>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- TOP CONTRIBUTORS                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Leaderboard</span>
+  </div>
+  <section id="top-contributors" class="dash-contributors" aria-label="Top contributors">
+    <div class="dash-panel__header">
+      <h2 class="dash-panel__title"><i class="fas fa-trophy"></i> Top Contributors</h2>
+    </div>
+    <div class="dash-contributors__list">
+      {% for contributor in top_contributors %}
+      <div class="dash-contributors__item{% if forloop.counter == 1 %} dash-contributors__item--gold{% elif forloop.counter == 2 %} dash-contributors__item--silver{% elif forloop.counter == 3 %} dash-contributors__item--bronze{% endif %}">
+        <span class="dash-contributors__rank">#{{ forloop.counter }}</span>
+        <div class="dash-contributors__avatar">
+          {% if contributor.profile.profile_picture %}
+            <img src="{{ contributor.profile.profile_picture.url }}" alt="{{ contributor.username }}" class="dash-contributors__avatar-img">
+          {% else %}
+            <div class="dash-contributors__avatar-placeholder">{{ contributor.username|make_list|first|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="dash-contributors__info">
+          <span class="dash-contributors__name">@{{ contributor.username }}</span>
+          <span class="dash-contributors__stat">{{ contributor.post_count|default:"0" }} posts</span>
+        </div>
+        <div class="dash-contributors__bar-wrap">
+          <div class="dash-contributors__bar" style="width: {{ contributor.bar_pct|default:'0' }}%"></div>
+        </div>
+        <span class="dash-contributors__count">{{ contributor.post_count|default:"0" }}</span>
+      </div>
+      {% empty %}
+      <!-- Sample data when no contributors yet -->
+      {% for item in "ASJML" %}
+      <div class="dash-contributors__item{% if forloop.counter == 1 %} dash-contributors__item--gold{% elif forloop.counter == 2 %} dash-contributors__item--silver{% elif forloop.counter == 3 %} dash-contributors__item--bronze{% endif %}">
+        <span class="dash-contributors__rank">#{{ forloop.counter }}</span>
+        <div class="dash-contributors__avatar">
+          <div class="dash-contributors__avatar-placeholder">{{ item }}</div>
+        </div>
+        <div class="dash-contributors__info">
+          <span class="dash-contributors__name">@sample_user_{{ forloop.counter }}</span>
+          <span class="dash-contributors__stat">{{ forloop.revcounter }}0 posts</span>
+        </div>
+        <div class="dash-contributors__bar-wrap">
+          <div class="dash-contributors__bar" style="width: {{ forloop.revcounter }}0%"></div>
+        </div>
+        <span class="dash-contributors__count">{{ forloop.revcounter }}0</span>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- MODEL REGISTRY — quick-access cards for all models                   -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Model Registry</span>
+  </div>
+  <div class="dash-models" id="model-registry">
+    <a href="/admin/auth/user/" class="dash-model-card" id="model-users"
+       style="--model-accent: linear-gradient(90deg, #6366f1, #818cf8);">
+      <div class="dash-model-card__icon" style="background:rgba(99,102,241,0.14);border:1px solid rgba(99,102,241,0.25);color:#818cf8;">
+        <i class="fas fa-users"></i>
+      </div>
+      <span class="dash-model-card__name">Users</span>
+      <span class="dash-model-card__count">{{ total_users|default:"0" }} records</span>
+    </a>
+    <a href="/admin/auth/group/" class="dash-model-card" id="model-groups"
+       style="--model-accent: linear-gradient(90deg, #a855f7, #c084fc);">
+      <div class="dash-model-card__icon" style="background:rgba(168,85,247,0.14);border:1px solid rgba(168,85,247,0.25);color:#c084fc;">
+        <i class="fas fa-layer-group"></i>
+      </div>
+      <span class="dash-model-card__name">Groups</span>
+      <span class="dash-model-card__count">Manage</span>
+    </a>
+    <a href="/admin/core/userprofile/" class="dash-model-card" id="model-profiles"
+       style="--model-accent: linear-gradient(90deg, #06b6d4, #22d3ee);">
+      <div class="dash-model-card__icon" style="background:rgba(6,182,212,0.14);border:1px solid rgba(6,182,212,0.25);color:#22d3ee;">
+        <i class="fas fa-id-card"></i>
+      </div>
+      <span class="dash-model-card__name">Profiles</span>
+      <span class="dash-model-card__count">{{ total_users|default:"0" }} records</span>
+    </a>
+    <a href="/admin/core/post/" class="dash-model-card" id="model-posts"
+       style="--model-accent: linear-gradient(90deg, #10b981, #34d399);">
+      <div class="dash-model-card__icon" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.25);color:#34d399;">
+        <i class="fas fa-newspaper"></i>
+      </div>
+      <span class="dash-model-card__name">Posts</span>
+      <span class="dash-model-card__count">{{ total_posts|default:"0" }} records</span>
+    </a>
+    <a href="/admin/core/comment/" class="dash-model-card" id="model-comments"
+       style="--model-accent: linear-gradient(90deg, #0891b2, #22d3ee);">
+      <div class="dash-model-card__icon" style="background:rgba(8,145,178,0.14);border:1px solid rgba(8,145,178,0.25);color:#67e8f9;">
+        <i class="fas fa-comments"></i>
+      </div>
+      <span class="dash-model-card__name">Comments</span>
+      <span class="dash-model-card__count">{{ total_comments|default:"0" }} records</span>
+    </a>
+    <a href="/admin/core/like/" class="dash-model-card" id="model-likes"
+       style="--model-accent: linear-gradient(90deg, #e11d48, #fb7185);">
+      <div class="dash-model-card__icon" style="background:rgba(244,63,94,0.14);border:1px solid rgba(244,63,94,0.25);color:#fb7185;">
+        <i class="fas fa-heart"></i>
+      </div>
+      <span class="dash-model-card__name">Likes</span>
+      <span class="dash-model-card__count">{{ total_likes|default:"0" }} records</span>
+    </a>
+    <a href="/admin/core/follow/" class="dash-model-card" id="model-follows"
+       style="--model-accent: linear-gradient(90deg, #7c3aed, #a855f7);">
+      <div class="dash-model-card__icon" style="background:rgba(124,58,237,0.14);border:1px solid rgba(124,58,237,0.25);color:#c084fc;">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      <span class="dash-model-card__name">Follows</span>
+      <span class="dash-model-card__count">{{ total_follows|default:"0" }} records</span>
+    </a>
+    <a href="/admin/" class="dash-model-card" id="model-admin"
+       style="--model-accent: linear-gradient(90deg, #f59e0b, #fbbf24);">
+      <div class="dash-model-card__icon" style="background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.25);color:#fbbf24;">
+        <i class="fas fa-cogs"></i>
+      </div>
+      <span class="dash-model-card__name">Settings</span>
+      <span class="dash-model-card__count">Admin Panel</span>
+    </a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- QUICK ACTIONS BAR                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-section-header">
+    <span class="dash-section-title">Quick Actions</span>
+  </div>
+  <section id="quick-actions" class="dash-quick" aria-label="Quick actions">
+    <a href="{% url 'admin:auth_user_add' %}" class="dash-quick__btn dash-quick__btn--user" id="quick-add-user">
+      <i class="fas fa-user-plus"></i>
+      <span class="dash-quick__btn-text">
+        <span class="dash-quick__btn-label">Add New User</span>
+        <span class="dash-quick__btn-sub">Register a platform member</span>
+      </span>
+      <kbd class="dash-quick__kbd">Alt+U</kbd>
+    </a>
+    <a href="{% url 'admin:core_post_add' %}" class="dash-quick__btn dash-quick__btn--post" id="quick-add-post">
+      <i class="fas fa-plus-square"></i>
+      <span class="dash-quick__btn-text">
+        <span class="dash-quick__btn-label">Create Post</span>
+        <span class="dash-quick__btn-sub">Publish new content</span>
+      </span>
+      <kbd class="dash-quick__kbd">Alt+P</kbd>
+    </a>
+    <a href="/" target="_blank" class="dash-quick__btn dash-quick__btn--site" id="quick-view-site">
+      <i class="fas fa-external-link-alt"></i>
+      <span class="dash-quick__btn-text">
+        <span class="dash-quick__btn-label">View Live Site</span>
+        <span class="dash-quick__btn-sub">Open SocialSphere</span>
+      </span>
+      <kbd class="dash-quick__kbd">Alt+V</kbd>
+    </a>
+  </section>
+
+</div><!-- /#dashboard-wrapper -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  "use strict";
+
+  /* ── Live Clock ─────────────────────────────────────────────────────── */
+  var clockEl = document.getElementById("dashboard-live-clock");
+  function tickClock() {
+    var now = new Date();
+    var opts = { weekday: "short", month: "short", day: "numeric",
+                 hour: "2-digit", minute: "2-digit", second: "2-digit" };
+    clockEl.textContent = now.toLocaleDateString(undefined, opts);
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  /* ── Platform Pulse Calculations ────────────────────────────────────── */
+  var totalUsers    = parseInt("{{ total_users|default:'0' }}") || 0;
+  var totalPosts    = parseInt("{{ total_posts|default:'0' }}") || 0;
+  var totalComments = parseInt("{{ total_comments|default:'0' }}") || 0;
+  var totalLikes    = parseInt("{{ total_likes|default:'0' }}") || 0;
+  var totalFollows  = parseInt("{{ total_follows|default:'0' }}") || 0;
+
+  var pulseVelocityEl  = document.getElementById("pulse-velocity");
+  var pulseRetentionEl = document.getElementById("pulse-retention");
+  var pulseViralEl     = document.getElementById("pulse-viral");
+
+  if (pulseVelocityEl) {
+    var postsPerUser = totalUsers > 0 ? (totalPosts / totalUsers).toFixed(1) : "0";
+    pulseVelocityEl.textContent = postsPerUser;
+  }
+  if (pulseRetentionEl) {
+    var interPerPost = totalPosts > 0 ? ((totalLikes + totalComments) / totalPosts).toFixed(1) : "0";
+    pulseRetentionEl.textContent = interPerPost;
+  }
+  if (pulseViralEl) {
+    var followsPerUser = totalUsers > 0 ? (totalFollows / totalUsers).toFixed(1) : "0";
+    pulseViralEl.textContent = followsPerUser;
+  }
+
+  /* ── Particle Canvas in Welcome Header ──────────────────────────────── */
+  var canvas = document.getElementById("particles-canvas");
+  var welcome = document.getElementById("dashboard-welcome");
+  if (canvas && welcome) {
+    var ctx2d = canvas.getContext("2d");
+    var particles = [];
+    var PARTICLE_COUNT = 40;
+
+    function resizeCanvas() {
+      canvas.width  = welcome.offsetWidth;
+      canvas.height = welcome.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas, { passive: true });
+
+    function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+    var colors = ["rgba(99,102,241,","rgba(168,85,247,","rgba(6,182,212,","rgba(244,63,94,"];
+
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x:     randomBetween(0, canvas.width),
+        y:     randomBetween(0, canvas.height),
+        r:     randomBetween(1, 2.5),
+        vx:    randomBetween(-0.25, 0.25),
+        vy:    randomBetween(-0.35, -0.08),
+        alpha: randomBetween(0.2, 0.65),
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+
+    function animParticles() {
+      ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(function(p) {
+        ctx2d.beginPath();
+        ctx2d.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx2d.fillStyle = p.color + p.alpha + ")";
+        ctx2d.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y < -5)              p.y = canvas.height + 5;
+        if (p.x < -5)              p.x = canvas.width + 5;
+        if (p.x > canvas.width + 5) p.x = -5;
+      });
+      requestAnimationFrame(animParticles);
+    }
+    animParticles();
+  }
+
+  /* ── 3D Tilt Effect on Stat Cards ───────────────────────────────────── */
+  document.querySelectorAll(".dash-stats__card").forEach(function(card) {
+    card.addEventListener("mousemove", function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var cx = rect.width / 2;
+      var cy = rect.height / 2;
+      var rotX = ((y - cy) / cy) * -6;
+      var rotY = ((x - cx) / cx) * 6;
+      card.style.transform = "translateY(-6px) scale(1.015) perspective(600px) rotateX(" + rotX + "deg) rotateY(" + rotY + "deg)";
+    });
+    card.addEventListener("mouseleave", function() {
+      card.style.transform = "";
+    });
+  });
+
+  /* ── Chart.js — Area Chart ──────────────────────────────────────────── */
+  var actCanvas = document.getElementById("activityChart");
+  if (actCanvas && window.Chart) {
+    var actCtx = actCanvas.getContext("2d");
+    var labels        = JSON.parse(actCanvas.getAttribute("data-labels") || "[]");
+    var values        = JSON.parse(actCanvas.getAttribute("data-values") || "[]");
+    var commentsRaw   = actCanvas.getAttribute("data-values-comments") || "[]";
+    var commentsVals  = JSON.parse(commentsRaw);
+
+    if (!commentsVals.length && values.length) {
+      commentsVals = values.map(function(v) { return Math.max(0, Math.round(v * (0.4 + Math.random() * 0.4))); });
+    }
+
+    var gPosts = actCtx.createLinearGradient(0, 0, 0, 310);
+    gPosts.addColorStop(0, "rgba(99,102,241,0.40)");
+    gPosts.addColorStop(1, "rgba(99,102,241,0.01)");
+
+    var gComments = actCtx.createLinearGradient(0, 0, 0, 310);
+    gComments.addColorStop(0, "rgba(6,182,212,0.28)");
+    gComments.addColorStop(1, "rgba(6,182,212,0.01)");
+
+    new Chart(actCtx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          { label: "Posts", data: values, fill: true,
+            backgroundColor: gPosts, borderColor: "#6366f1", borderWidth: 2.5,
+            pointBackgroundColor: "#6366f1", pointBorderColor: "#0e1428", pointBorderWidth: 2,
+            pointRadius: 5, pointHoverRadius: 8, tension: 0.42 },
+          { label: "Comments", data: commentsVals, fill: true,
+            backgroundColor: gComments, borderColor: "#06b6d4", borderWidth: 2,
+            pointBackgroundColor: "#06b6d4", pointBorderColor: "#0e1428", pointBorderWidth: 2,
+            pointRadius: 4, pointHoverRadius: 7, tension: 0.42, borderDash: [5,3] }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: true,
+            labels: { color: "#8b9dc3", font: { size: 12, family: "'Inter',sans-serif" },
+                      usePointStyle: true, pointStyle: "circle", padding: 20 } },
+          tooltip: { backgroundColor: "rgba(10,15,30,0.96)", titleColor: "#e8edf8",
+                     bodyColor: "#8b9dc3", borderColor: "rgba(99,102,241,0.35)",
+                     borderWidth: 1, cornerRadius: 12, padding: 14,
+                     titleFont: { weight: "800" }, bodyFont: { size: 12 } }
+        },
+        scales: {
+          x: { grid: { color: "rgba(255,255,255,0.03)" }, ticks: { color: "#8b9dc3", font: { size: 11 } } },
+          y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.03)" },
+               ticks: { color: "#8b9dc3", font: { size: 11 }, precision: 0 } }
+        }
+      }
+    });
+  }
+
+  /* ── Chart.js — Donut ───────────────────────────────────────────────── */
+  var donutCanvas = document.getElementById("donutChart");
+  if (donutCanvas && window.Chart) {
+    var dCtx  = donutCanvas.getContext("2d");
+    var dPosts    = parseInt(donutCanvas.getAttribute("data-posts"))    || 0;
+    var dComments = parseInt(donutCanvas.getAttribute("data-comments")) || 0;
+    var dLikes    = parseInt(donutCanvas.getAttribute("data-likes"))    || 0;
+    if (!dPosts && !dComments && !dLikes) { dPosts = 245; dComments = 412; dLikes = 1830; }
+
+    new Chart(dCtx, {
+      type: "doughnut",
+      data: {
+        labels: ["Posts", "Comments", "Likes"],
+        datasets: [{
+          data: [dPosts, dComments, dLikes],
+          backgroundColor: ["rgba(99,102,241,0.82)","rgba(6,182,212,0.82)","rgba(244,63,94,0.82)"],
+          borderColor:     ["#6366f1","#06b6d4","#f43f5e"],
+          borderWidth: 2, hoverBorderWidth: 3, hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: "74%",
+        plugins: {
+          legend: { position: "bottom",
+            labels: { color: "#8b9dc3", font: { size: 11, family: "'Inter',sans-serif" },
+                      usePointStyle: true, pointStyle: "circle", padding: 16 } },
+          tooltip: { backgroundColor: "rgba(10,15,30,0.96)", titleColor: "#e8edf8",
+                     bodyColor: "#8b9dc3", borderColor: "rgba(99,102,241,0.35)",
+                     borderWidth: 1, cornerRadius: 12, padding: 14 }
+        }
+      }
+    });
+  }
+
+  /* ── Animated stat counters ─────────────────────────────────────────── */
+  document.querySelectorAll(".dash-stats__count").forEach(function(el) {
+    var raw   = el.textContent.trim();
+    var isPct = el.classList.contains("dash-stats__count--pct");
+    var target = parseFloat(raw) || 0;
+    if (target === 0) return;
+    var startTime = null, duration = 1400;
+    function ease(t) { return 1 - Math.pow(1 - t, 4); }
+    function animate(ts) {
+      if (!startTime) startTime = ts;
+      var p = Math.min((ts - startTime) / duration, 1);
+      var v = ease(p) * target;
+      el.textContent = isPct ? v.toFixed(1) + "%" : Math.round(v).toLocaleString();
+      if (p < 1) { requestAnimationFrame(animate); }
+      else { el.textContent = isPct ? target.toFixed(1) + "%" : target.toLocaleString(); }
+    }
+    requestAnimationFrame(animate);
+  });
+
+  /* ── Health rings animate on scroll ─────────────────────────────────── */
+  var healthSection = document.getElementById("system-health");
+  if (healthSection) {
+    var animated = false;
+    function checkVisible() {
+      if (animated) return;
+      var r = healthSection.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) {
+        animated = true;
+        healthSection.classList.add("dash-health--visible");
+      }
+    }
+    checkVisible();
+    window.addEventListener("scroll", checkVisible, { passive: true });
+  }
+
+  /* ── Keyboard shortcuts ─────────────────────────────────────────────── */
+  document.addEventListener("keydown", function(e) {
+    if (!e.altKey) return;
+    var k = e.key.toLowerCase();
+    if (k === "u") { e.preventDefault(); document.getElementById("quick-add-user").click(); }
+    else if (k === "p") { e.preventDefault(); document.getElementById("quick-add-post").click(); }
+    else if (k === "v") { e.preventDefault(); document.getElementById("quick-view-site").click(); }
+  });
+
+  /* ── Ticker duplicate for seamless loop ─────────────────────────────── */
+  var ticker = document.querySelector(".dash-ticker__content");
+  if (ticker) {
+    ticker.innerHTML = ticker.innerHTML + " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " + ticker.innerHTML;
+  }
+
+})();
+</script>
+{% endblock %}

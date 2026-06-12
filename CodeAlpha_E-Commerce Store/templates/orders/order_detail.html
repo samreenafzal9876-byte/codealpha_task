@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.id }} Details - Aura Store{% endblock %}
+
+{% block extra_css %}
+<style>
+    .invoice-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary btn-sm px-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Profile
+        </a>
+        <span class="text-muted small fw-semibold">Receipt & Invoice</span>
+    </div>
+
+    <div class="invoice-card shadow-sm">
+        <!-- Invoice Header -->
+        <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4 flex-wrap g-3">
+            <div>
+                <h1 class="h3 fw-bold text-dark mb-1" style="font-family: 'Outfit', sans-serif;">Order #{{ order.id }}</h1>
+                <p class="text-muted small mb-0">Placed on {{ order.created|date:"F d, Y @ H:i" }}</p>
+            </div>
+            <div>
+                <span class="text-muted small d-block mb-1 text-uppercase tracking-wider" style="font-size: 0.75rem;">Payment Status</span>
+                {% if order.paid %}
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1.5 small rounded-pill">Paid</span>
+                {% else %}
+                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1.5 small rounded-pill">Pending</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Info Columns (Customer vs Shipping info) -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase tracking-wider small mb-2" style="font-size: 0.75rem;">Customer Information</h6>
+                <p class="fw-semibold text-dark mb-1">{{ order.first_name }} {{ order.last_name }}</p>
+                <p class="text-muted small mb-0">{{ order.email }}</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted text-uppercase tracking-wider small mb-2" style="font-size: 0.75rem;">Shipping Address</h6>
+                <p class="text-dark mb-0 leading-relaxed">
+                    {{ order.address }}<br>
+                    {{ order.city }}, {{ order.postal_code }}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Items Table -->
+        <div class="mb-4">
+            <h6 class="text-muted text-uppercase tracking-wider small mb-3 border-bottom pb-2" style="font-size: 0.75rem;">Itemized Receipt</h6>
+            
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr class="table-light">
+                            <th scope="col" style="font-size: 0.8rem;" class="text-muted text-uppercase">Product</th>
+                            <th scope="col" style="font-size: 0.8rem;" class="text-muted text-uppercase text-center">Price</th>
+                            <th scope="col" style="font-size: 0.8rem;" class="text-muted text-uppercase text-center">Quantity</th>
+                            <th scope="col" style="font-size: 0.8rem;" class="text-muted text-uppercase text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid rounded border" style="width: 50px; height: 50px; object-fit: contain; background: #f8fafc;">
+                                    {% else %}
+                                        <div class="bg-light rounded border d-flex align-items-center justify-content-center text-muted fw-bold small" style="width: 50px; height: 50px;">AURA</div>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="fw-semibold text-dark mb-0">{{ item.product.name }}</h6>
+                                        <span class="text-muted small">{{ item.product.category.name }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center text-dark">${{ item.price }}</td>
+                            <td class="text-center text-dark">{{ item.quantity }}</td>
+                            <td class="text-end fw-semibold text-dark">${{ item.get_cost }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Totals Block -->
+        <div class="row justify-content-end">
+            <div class="col-md-5 col-lg-4">
+                <div class="d-flex justify-content-between mb-2 small text-muted">
+                    <span>Subtotal</span>
+                    <span class="text-dark fw-medium">${{ order.get_total_cost }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 small text-muted">
+                    <span>Shipping & Handling</span>
+                    <span class="text-success fw-medium">Free</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fs-5 fw-bold text-dark mt-2">
+                    <span>Total Cost:</span>
+                    <span>${{ order.get_total_cost }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

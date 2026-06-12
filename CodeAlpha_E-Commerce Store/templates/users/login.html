@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Log In - Aura Store{% endblock %}
+
+{% block content %}
+<div class="container my-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Welcome Back</h2>
+                    <p class="text-muted small">Access your premium storefront account.</p>
+                </div>
+                
+                <ul class="nav nav-pills nav-justified mb-4" id="loginTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if active_tab != 'seller' %}active{% endif %}" id="buyer-tab" data-bs-toggle="tab" data-bs-target="#buyer" type="button" role="tab" aria-controls="buyer" aria-selected="{% if active_tab != 'seller' %}true{% else %}false{% endif %}">Login as Buyer</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if active_tab == 'seller' %}active{% endif %}" id="seller-tab" data-bs-toggle="tab" data-bs-target="#seller" type="button" role="tab" aria-controls="seller" aria-selected="{% if active_tab == 'seller' %}true{% else %}false{% endif %}">Login as Seller</button>
+                    </li>
+                </ul>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} py-2 px-3 small border-0 mb-3" style="border-radius: 8px;">
+                            <p class="mb-0">{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger py-2 px-3 small border-0 mb-3" style="border-radius: 8px;">
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="tab-content" id="loginTabsContent">
+                    <!-- Buyer Tab -->
+                    <div class="tab-pane fade {% if active_tab != 'seller' %}show active{% endif %}" id="buyer" role="tabpanel" aria-labelledby="buyer-tab">
+                        <form method="POST" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="role" value="buyer">
+                            
+                            {% for field in form %}
+                                {% if field.name != 'role' %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}_buyer" class="form-label fw-medium small">{{ field.label }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-{% if 'username' in field.name %}person{% else %}key{% endif %}"></i></span>
+                                        <input type="{% if 'password' in field.name %}password{% else %}text{% endif %}" 
+                                               name="{{ field.html_name }}" 
+                                               id="{{ field.id_for_label }}_buyer" 
+                                               class="form-control border-start-0 bg-light {% if field.errors and active_tab != 'seller' %}is-invalid{% endif %}" 
+                                               placeholder="Enter your {{ field.label|lower }}"
+                                               value="{% if 'password' not in field.name and active_tab != 'seller' %}{{ field.value|default:'' }}{% endif %}"
+                                               required>
+                                        {% if active_tab != 'seller' %}
+                                            {% for error in field.errors %}
+                                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMeBuyer">
+                                    <label class="form-check-input-label small text-muted" for="rememberMeBuyer">Remember me</label>
+                                </div>
+                                <a href="#" class="small text-primary text-decoration-none fw-medium">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Sign In as Buyer</button>
+                            <input type="hidden" name="next" value="{{ next|default:'/' }}">
+                        </form>
+                    </div>
+
+                    <!-- Seller Tab -->
+                    <div class="tab-pane fade {% if active_tab == 'seller' %}show active{% endif %}" id="seller" role="tabpanel" aria-labelledby="seller-tab">
+                        <form method="POST" novalidate>
+                            {% csrf_token %}
+                            <input type="hidden" name="role" value="seller">
+                            
+                            {% for field in form %}
+                                {% if field.name != 'role' %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}_seller" class="form-label fw-medium small">{{ field.label }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-{% if 'username' in field.name %}person{% else %}key{% endif %}"></i></span>
+                                        <input type="{% if 'password' in field.name %}password{% else %}text{% endif %}" 
+                                               name="{{ field.html_name }}" 
+                                               id="{{ field.id_for_label }}_seller" 
+                                               class="form-control border-start-0 bg-light {% if field.errors and active_tab == 'seller' %}is-invalid{% endif %}" 
+                                               placeholder="Enter your {{ field.label|lower }}"
+                                               value="{% if 'password' not in field.name and active_tab == 'seller' %}{{ field.value|default:'' }}{% endif %}"
+                                               required>
+                                        {% if active_tab == 'seller' %}
+                                            {% for error in field.errors %}
+                                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMeSeller">
+                                    <label class="form-check-input-label small text-muted" for="rememberMeSeller">Remember me</label>
+                                </div>
+                                <a href="#" class="small text-primary text-decoration-none fw-medium">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-3 mb-3">Sign In as Seller</button>
+                            <input type="hidden" name="next" value="{{ next|default:'/' }}">
+                        </form>
+                    </div>
+                </div>
+
+                <p class="text-center small text-muted mb-0">Don't have an account? <a href="{% url 'users:register' %}" class="text-decoration-none fw-bold text-primary">Register Now</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

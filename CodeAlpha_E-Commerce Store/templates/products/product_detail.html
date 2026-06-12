@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Aura Store{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gallery-main {
+        background-color: #f8fafc;
+        border-radius: 16px;
+        padding: 2rem;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e2e8f0;
+    }
+    .gallery-main img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    .gallery-thumb {
+        width: 80px;
+        height: 80px;
+        padding: 0.5rem;
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    .gallery-thumb:hover, .gallery-thumb.active {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+    }
+    .gallery-thumb img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    .product-meta-badge {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}" class="text-decoration-none">Shop</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}?category={{ product.category.slug }}" class="text-decoration-none">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Left Column: Gallery (col-md-6) -->
+        <div class="col-md-6">
+            <div class="gallery-main mb-3">
+                {% if product.image %}
+                    <img id="mainProductImage" src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <span class="text-muted fw-bold">No Image Available</span>
+                {% endif %}
+            </div>
+            
+            {% if mock_gallery %}
+            <div class="d-flex gap-3 justify-content-center">
+                {% for img_url in mock_gallery %}
+                    <div class="gallery-thumb {% if forloop.first %}active{% endif %}" onclick="changeMainImage(this, '{{ img_url }}')">
+                        <img src="{{ img_url }}" alt="Thumbnail">
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Details (col-md-6) -->
+        <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-light text-primary border px-2.5 py-1.5 product-meta-badge">{{ product.category.name }}</span>
+                {% if product.stock_quantity > 0 %}
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 product-meta-badge">In Stock</span>
+                {% else %}
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1.5 product-meta-badge">Out of Stock</span>
+                {% endif %}
+            </div>
+
+            <h1 class="display-6 fw-bold mb-2 text-dark" style="font-family: 'Outfit', sans-serif;">{{ product.name }}</h1>
+            
+            <!-- Mock rating stars -->
+            <div class="d-flex align-items-center mb-4 text-warning">
+                <div class="me-2">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                </div>
+                <span class="text-muted small">(4.8 / 5.0 - 24 customer reviews)</span>
+            </div>
+
+            <!-- Price -->
+            <div class="mb-4">
+                <span class="fs-2 fw-bold text-dark">${{ product.price }}</span>
+                <span class="text-muted small ms-2">Free shipping on orders over $150</span>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Description</h5>
+                <p class="text-muted leading-relaxed">{{ product.description|default:"No description has been provided for this product yet. Rest assured, all Aura Store items are carefully inspected for maximum build quality and premium standards." }}</p>
+            </div>
+
+            <!-- Action inputs -->
+            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="mt-4">
+                {% csrf_token %}
+                <div class="row g-3 align-items-center mb-4">
+                    <div class="col-auto">
+                        <label for="quantity" class="col-form-label fw-semibold">Quantity:</label>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-group" style="width: 140px;">
+                            <button class="btn btn-outline-secondary" type="button" onclick="decrementQty()">-</button>
+                            <input type="number" name="quantity" id="quantityInput" class="form-control text-center" value="1" min="1" max="{{ product.stock_quantity|default:10 }}">
+                            <button class="btn btn-outline-secondary" type="button" onclick="incrementQty()">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-primary btn-lg flex-grow-1 py-3 {% if product.stock_quantity == 0 %}disabled{% endif %}">
+                        <i class="bi bi-bag-plus me-2 fs-5"></i> Add to Cart
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="toggleWishlist(this)">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function changeMainImage(element, url) {
+        // Update main image src
+        document.getElementById('mainProductImage').src = url;
+        
+        // Toggle active class on thumbnails
+        const thumbs = document.querySelectorAll('.gallery-thumb');
+        thumbs.forEach(t => t.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function incrementQty() {
+        const input = document.getElementById('quantityInput');
+        const max = parseInt(input.getAttribute('max')) || 10;
+        let val = parseInt(input.value) || 1;
+        if (val < max) {
+            input.value = val + 1;
+        }
+    }
+
+    function decrementQty() {
+        const input = document.getElementById('quantityInput');
+        let val = parseInt(input.value) || 1;
+        if (val > 1) {
+            input.value = val - 1;
+        }
+    }
+
+    function toggleWishlist(btn) {
+        const icon = btn.querySelector('i');
+        if (icon.classList.contains('bi-heart')) {
+            icon.classList.remove('bi-heart');
+            icon.classList.add('bi-heart-fill', 'text-danger');
+            btn.classList.add('border-danger');
+        } else {
+            icon.classList.remove('bi-heart-fill', 'text-danger');
+            icon.classList.add('bi-heart');
+            btn.classList.remove('border-danger');
+        }
+    }
+</script>
+{% endblock %}

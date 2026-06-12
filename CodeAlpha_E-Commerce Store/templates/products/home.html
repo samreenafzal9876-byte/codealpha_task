@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome to Aura Store - Premium Tech & Lifestyle{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-banner {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        color: white;
+        padding: 6rem 0;
+        border-radius: 0 0 24px 24px;
+        margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-banner::after {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+        top: -50px;
+        right: -50px;
+        border-radius: 50%;
+    }
+    .category-card {
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        height: 200px;
+        background-color: #0f172a;
+        transition: all 0.3s ease;
+    }
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .category-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.6;
+        transition: transform 0.5s ease;
+    }
+    .category-card:hover img {
+        transform: scale(1.05);
+    }
+    .category-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+        color: white;
+    }
+    .badge-featured {
+        background-color: #6366f1;
+        color: white;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-banner">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="badge badge-featured px-3 py-2 rounded-pill mb-3">NEW ARRIVALS AVAILABLE</span>
+                <h1 class="display-4 fw-extrabold mb-3 text-white" style="font-family: 'Outfit', sans-serif;">Discover the Exceptional</h1>
+                <p class="lead mb-4 text-light opacity-75">Curated premium tech and lifestyle products designed to elevate your everyday experiences.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg px-4">Shop Collection</a>
+                    <a href="{% url 'products:about_us' %}" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="position-relative d-flex justify-content-center">
+                    <div style="width: 450px; height: 320px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);" class="p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="badge bg-indigo-500 bg-opacity-25 text-indigo-300 border border-indigo-500 border-opacity-50 px-2.5 py-1 rounded">Feature Choice</span>
+                                <h4 class="text-white-50">01 / 03</h4>
+                            </div>
+                            <h2 class="text-white mt-3" style="font-family: 'Outfit', sans-serif;">Smartphone X</h2>
+                            <p class="text-light opacity-75 small">Experience 5G speed, absolute camera clarity, and all-day intelligent battery life in a minimalist chassis.</p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fs-3 fw-bold text-white">$699.99</span>
+                            <a href="/products/smartphone-x/" class="btn btn-sm btn-light rounded-pill px-3 fw-semibold">View Product</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <span class="text-primary fw-semibold text-uppercase small tracking-wider">Browse by</span>
+            <h2 class="h1 mb-0" style="font-family: 'Outfit', sans-serif;">Popular Categories</h2>
+        </div>
+        <a href="{% url 'products:product_list' %}" class="text-decoration-none fw-medium text-primary">View All Products <i class="bi bi-arrow-right"></i></a>
+    </div>
+    
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'products:product_list' %}?category={{ category.slug }}" class="text-decoration-none">
+                <div class="category-card">
+                    <!-- Placeholder or dynamic category image -->
+                    {% if category.slug == 'electronics' %}
+                        <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=600&q=80" alt="{{ category.name }}">
+                    {% elif category.slug == 'clothing' %}
+                        <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=80" alt="{{ category.name }}">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=600&q=80" alt="{{ category.name }}">
+                    {% endif %}
+                    <div class="category-overlay">
+                        <h3 class="h4 mb-1" style="font-family: 'Outfit', sans-serif;">{{ category.name }}</h3>
+                        <p class="small text-light opacity-75 mb-0">{{ category.description }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4 bg-white rounded border">
+            <p class="text-muted mb-0">No categories found. Populate the database to see items.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Featured Products Section -->
+<div class="container mb-5 pb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <span class="text-primary fw-semibold text-uppercase small tracking-wider">Selected just for you</span>
+            <h2 class="h1 mb-0" style="font-family: 'Outfit', sans-serif;">Featured Products</h2>
+        </div>
+        <a href="{% url 'products:product_list' %}" class="text-decoration-none fw-medium text-primary">Explore Shop <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="position-relative overflow-hidden bg-light rounded-top" style="height: 280px; display: flex; align-items: center; justify-content: center;">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 1rem;">
+                    {% else %}
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fw-bold">
+                            AURA
+                        </div>
+                    {% endif %}
+                    <span class="badge bg-dark position-absolute top-3 start-3 px-2.5 py-1.5 rounded-pill shadow-sm">Popular</span>
+                </div>
+                <div class="card-body p-4 d-flex flex-column">
+                    <span class="text-muted small mb-1">{{ product.category.name }}</span>
+                    <h5 class="card-title mb-2"><a href="{% url 'products:product_detail' product.slug %}" class="text-decoration-none text-dark">{{ product.name }}</a></h5>
+                    <p class="text-muted small text-truncate mb-3">{{ product.description }}</p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <span class="fs-4 fw-bold text-dark">${{ product.price }}</span>
+                        
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-outline-primary rounded-pill btn-sm px-3">
+                                <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5 bg-white rounded border">
+            <p class="text-muted mb-0">No featured products found. Please populate the database.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

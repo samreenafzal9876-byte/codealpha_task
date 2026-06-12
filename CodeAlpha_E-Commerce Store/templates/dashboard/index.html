@@ -1,0 +1,185 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Aura Store{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Control Dashboard</h1>
+        <span class="text-muted small">Real-time statistics overview of your online storefront.</span>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-white border shadow-sm px-3" onclick="window.location.reload()"><i class="bi bi-arrow-clockwise me-1"></i> Refresh</button>
+        <a href="{% url 'dashboard:reports' %}" class="btn btn-sm btn-primary shadow-sm"><i class="bi bi-file-earmark-bar-graph me-1"></i> Generate Report</a>
+    </div>
+</div>
+
+<!-- Stat Cards Row -->
+<div class="row g-4 mb-4">
+    <!-- Revenue -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card card-success shadow-sm">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <span class="text-muted text-uppercase tracking-wider small d-block mb-1" style="font-size: 0.75rem;">Total Revenue</span>
+                    <h3 class="fw-bold mb-0 text-dark">${{ total_revenue }}</h3>
+                </div>
+                <div class="p-2 bg-success bg-opacity-10 text-success rounded-3"><i class="bi bi-currency-dollar fs-4"></i></div>
+            </div>
+            <span class="text-success small fw-medium"><i class="bi bi-arrow-up-short"></i> +12.4% <span class="text-muted">from last month</span></span>
+        </div>
+    </div>
+    
+    <!-- Orders -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card card-primary shadow-sm">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <span class="text-muted text-uppercase tracking-wider small d-block mb-1" style="font-size: 0.75rem;">Total Orders</span>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_orders }}</h3>
+                </div>
+                <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-3"><i class="bi bi-receipt fs-4"></i></div>
+            </div>
+            <span class="text-primary small fw-medium"><i class="bi bi-arrow-up-short"></i> +8.2% <span class="text-muted">from last week</span></span>
+        </div>
+    </div>
+
+    <!-- Active Products -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card card-warning shadow-sm">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <span class="text-muted text-uppercase tracking-wider small d-block mb-1" style="font-size: 0.75rem;">Active Products</span>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_products }}</h3>
+                </div>
+                <div class="p-2 bg-warning bg-opacity-10 text-warning rounded-3"><i class="bi bi-box-seam fs-4"></i></div>
+            </div>
+            <span class="text-warning small fw-medium"><span class="text-muted">Currently active catalog items</span></span>
+        </div>
+    </div>
+
+    <!-- Customers -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card card-info shadow-sm">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <span class="text-muted text-uppercase tracking-wider small d-block mb-1" style="font-size: 0.75rem;">Customers</span>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_customers }}</h3>
+                </div>
+                <div class="p-2 bg-info bg-opacity-10 text-info rounded-3"><i class="bi bi-people fs-4"></i></div>
+            </div>
+            <span class="text-info small fw-medium"><i class="bi bi-arrow-up-short"></i> +4.5% <span class="text-muted">new signups</span></span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Sales Chart Mockup (col-lg-8) -->
+    <div class="col-lg-8">
+        <div class="card p-4 border shadow-sm bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-dark m-0" style="font-family: 'Outfit', sans-serif;">Sales Analytics</h5>
+                <select class="form-select form-select-sm border" style="width: 120px;">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>This Year</option>
+                </select>
+            </div>
+            
+            <div class="w-100 bg-light rounded d-flex flex-column align-items-center justify-content-center border" style="height: 300px;">
+                <i class="bi bi-graph-up-arrow text-primary fs-1 mb-2"></i>
+                <h6 class="fw-semibold mb-1">Interactive Charts Mocked</h6>
+                <p class="text-muted small mb-0">Sales revenue graph loads here inside production build.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity / Info (col-lg-4) -->
+    <div class="col-lg-4">
+        <div class="card p-4 border shadow-sm bg-white h-100">
+            <h5 class="fw-bold text-dark mb-4" style="font-family: 'Outfit', sans-serif;">System Status</h5>
+            
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-center justify-content-between p-2.5 bg-light rounded border">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="spinner-grow spinner-grow-sm text-success" role="status"></span>
+                        <span class="fw-medium small">Web Server</span>
+                    </div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small rounded">Online</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between p-2.5 bg-light rounded border">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="p-1 bg-success rounded-circle"></span>
+                        <span class="fw-medium small">Database Status</span>
+                    </div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small rounded">Operational</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between p-2.5 bg-light rounded border">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="p-1 bg-warning rounded-circle"></span>
+                        <span class="fw-medium small">Storage Volume</span>
+                    </div>
+                    <span class="text-muted small fw-semibold">1.4 GB / 10 GB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders (col-lg-12) -->
+    <div class="col-12 mt-4">
+        <div class="table-card border shadow-sm bg-white">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold text-dark m-0" style="font-family: 'Outfit', sans-serif;">Recent Orders</h5>
+                <a href="{% url 'dashboard:orders' %}" class="btn btn-xs btn-outline-primary px-3 py-1.5 small">View All Orders</a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr class="table-light">
+                            <th scope="col" class="text-muted text-uppercase small px-3">Order ID</th>
+                            <th scope="col" class="text-muted text-uppercase small">Customer</th>
+                            <th scope="col" class="text-muted text-uppercase small">Date</th>
+                            <th scope="col" class="text-muted text-uppercase small text-center">Items Count</th>
+                            <th scope="col" class="text-muted text-uppercase small">Total</th>
+                            <th scope="col" class="text-muted text-uppercase small">Payment</th>
+                            <th scope="col" class="text-muted text-uppercase small text-end px-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td class="px-3 fw-bold text-dark">#{{ order.id }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ order.first_name }} {{ order.last_name }}</div>
+                                <span class="text-muted small">{{ order.email }}</span>
+                            </td>
+                            <td>{{ order.created|date:"Y-m-d H:i" }}</td>
+                            <td class="text-center">{{ order.items.count }}</td>
+                            <td class="fw-bold text-primary">${{ order.get_total_cost }}</td>
+                            <td>
+                                {% if order.paid %}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 small rounded-pill">Paid</span>
+                                {% else %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1.5 small rounded-pill">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end px-3">
+                                <a href="{% url 'dashboard:order_details' order.id %}" class="btn btn-xs btn-outline-secondary py-1 px-2.5 small">Manage</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No orders found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

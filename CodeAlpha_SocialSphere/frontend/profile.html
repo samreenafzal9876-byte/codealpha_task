@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SocialSphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout">
+        <!-- Header & Left Sidebar will be injected here by layout.js -->
+
+        <main class="main-content">
+            <!-- Profile Header Card -->
+            <div class="card profile-header-card" id="profile-header">
+                <!-- Banner -->
+                <div class="profile-banner" id="profile-banner">
+                    <!-- Banner image injected by JS -->
+                </div>
+
+                <!-- Meta Section: Avatar, Name, Bio, Details, Stats -->
+                <div class="profile-meta-section">
+                    <div class="profile-meta-top">
+                        <img src="" alt="" class="profile-avatar-large" id="profile-avatar">
+                        <!-- Action button: Edit Profile or Follow/Unfollow -->
+                        <div id="profile-action-btn"></div>
+                    </div>
+
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="profile-name"></h2>
+                        <p class="profile-handle" id="profile-handle"></p>
+                        <p class="profile-bio" id="profile-bio"></p>
+
+                        <div class="profile-details-grid" id="profile-details">
+                            <!-- Location, Website, Join Date injected by JS -->
+                        </div>
+
+                        <div class="profile-stats-row" id="profile-stats">
+                            <!-- Following / Followers counts injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-nav" id="profile-tabs">
+                <button class="tab-btn active" data-tab="posts">
+                    <i class="fa-solid fa-newspaper"></i> Posts
+                </button>
+                <button class="tab-btn" data-tab="likes">
+                    <i class="fa-regular fa-heart"></i> Likes
+                </button>
+            </div>
+
+            <!-- Tab Content: Posts -->
+            <div id="tab-posts" class="tab-content">
+                <!-- User's posts rendered here by JS -->
+            </div>
+
+            <!-- Tab Content: Likes -->
+            <div id="tab-likes" class="tab-content" style="display:none;">
+                <!-- Posts liked by user rendered here by JS -->
+            </div>
+        </main>
+
+        <!-- Right Sidebar Widgets (same as feed.html) -->
+        <aside class="sidebar-right">
+            <!-- Trending Widget -->
+            <div class="widget-card">
+                <div class="widget-title">
+                    <span>Trending Topics</span>
+                    <a href="#">Show more</a>
+                </div>
+                <div class="trends-list">
+                    <div class="trend-item">
+                        <span class="trend-category">Technology • Trending</span>
+                        <a href="feed.html?search=%23webdesign" class="trend-name">#webdesign</a>
+                        <span class="trend-posts">12.5K posts</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-category">Travel • Trending</span>
+                        <a href="feed.html?search=Tokyo" class="trend-name">Tokyo</a>
+                        <span class="trend-posts">45.2K posts</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-category">Programming • Trending</span>
+                        <a href="feed.html?search=debugging" class="trend-name">debugging</a>
+                        <span class="trend-posts">8.1K posts</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-category">Adventure • Trending</span>
+                        <a href="feed.html?search=hike" class="trend-name">#mountains</a>
+                        <span class="trend-posts">19.3K posts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions Widget -->
+            <div class="widget-card">
+                <div class="widget-title">
+                    <span>Who to Follow</span>
+                </div>
+                <div class="suggestions-list" id="who-to-follow-container">
+                    <!-- Suggestions will be injected here by profile.js -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Script imports -->
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

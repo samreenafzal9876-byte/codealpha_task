@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Notifications - SocialSphere{% endblock %}
+{% block layout_class %}no-right-sidebar{% endblock %}
+
+{% block content %}
+<main class="main-content" style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
+    <div class="feed-header" style="margin-bottom: 24px;">
+        <h2 class="feed-title" style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">
+            <i class="fa-solid fa-bell" style="color: var(--primary); margin-right: 8px;"></i>
+            Notifications
+        </h2>
+    </div>
+
+    <div class="card" style="text-align: center; padding: 48px 24px;">
+        <i class="fa-regular fa-bell" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 16px; display: block;"></i>
+        <h3 style="color: var(--text-primary); margin-bottom: 8px; font-weight: 600;">All Caught Up!</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            You have no new notifications. Check back later!
+        </p>
+    </div>
+</main>
+{% endblock %}

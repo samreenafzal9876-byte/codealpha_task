@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Feed - SocialSphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout">
+        <!-- Header & Left Sidebar will be injected here by layout.js -->
+
+        <main class="main-content">
+            <div class="feed-header">
+                <h2 class="feed-title" id="feed-page-title">Home Feed</h2>
+            </div>
+            
+            <!-- Inline Post Composer -->
+            <div class="card post-composer">
+                <div class="post-composer-row">
+                    <img src="" alt="" class="user-avatar-sm" id="composer-user-avatar">
+                    <div class="post-composer-input">
+                        <textarea id="composer-textarea" placeholder="What is happening in your sphere?"></textarea>
+                        
+                        <!-- Media attachment preview container -->
+                        <div id="composer-media-preview-container" style="display:none; position:relative; margin-bottom:12px; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border-color)">
+                            <img src="" id="composer-media-preview-img" style="width:100%; max-height:220px; object-fit:cover;">
+                            <button id="cancel-media-preview-btn" style="position:absolute; top:8px; right:8px; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,0.6); color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <div class="post-composer-actions">
+                            <div class="post-composer-tools">
+                                <button type="button" class="tool-btn" id="attach-image-btn" title="Add Image (Simulated)">
+                                    <i class="fa-regular fa-image"></i>
+                                </button>
+                                <button type="button" class="tool-btn" title="Add Emoji">
+                                    <i class="fa-regular fa-face-smile"></i>
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="submit-post-btn">
+                                Post <i class="fa-solid fa-paper-plane" style="font-size:0.8rem"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Post List -->
+            <div id="posts-feed-container">
+                <!-- Posts will be dynamically loaded here by feed.js -->
+            </div>
+        </main>
+
+        <!-- Right Sidebar Widgets -->
+        <aside class="sidebar-right">
+            <!-- Trending Widget -->
+            <div class="widget-card">
+                <div class="widget-title">
+                    <span>Trending Topics</span>
+                    <a href="#">Show more</a>
+                </div>
+                <div class="trends-list">
+                    <div class="trend-item">
+                        <span class="trend-category">Technology • Trending</span>
+                        <a href="feed.html?search=%23webdesign" class="trend-name">#webdesign</a>
+                        <span class="trend-posts">12.5K posts</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-category">Travel • Trending</span>
+                        <a href="feed.html?search=Tokyo" class="trend-name">Tokyo</a>
+                        <span class="trend-posts">45.2K posts</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-category">Programming • Trending</span>
+                        <a href="feed.html?search=debugging" class="trend-name">debugging</a>
+                        <span class="trend-posts">8.1K posts</span>
+                    </div>
+                    <div class="trend-item">
+                        <span class="trend-category">Adventure • Trending</span>
+                        <a href="feed.html?search=hike" class="trend-name">#mountains</a>
+                        <span class="trend-posts">19.3K posts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions Widget -->
+            <div class="widget-card">
+                <div class="widget-title">
+                    <span>Who to Follow</span>
+                </div>
+                <div class="suggestions-list" id="who-to-follow-container">
+                    <!-- Suggestions will be injected here by feed.js -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Script imports -->
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/feed.js"></script>
+</body>
+</html>

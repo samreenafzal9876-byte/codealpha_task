@@ -1,0 +1,206 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Manage Orders - Aura Store Admin{% endblock %}
+
+{% block content %}
+{% if messages %}
+<div class="mb-4">
+    {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 12px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Customer Orders</h1>
+        <span class="text-muted small">Monitor purchases, update shipping states, and print invoices.</span>
+    </div>
+</div>
+
+<!-- Search & filters -->
+<div class="card p-3 border shadow-sm bg-white mb-4">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search orders by ID, name, or email...">
+                <button class="btn btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select">
+                <option selected>All Payment Status</option>
+                <option>Paid</option>
+                <option>Pending</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select">
+                <option selected>All Order Status</option>
+                <option>Processing</option>
+                <option>Shipped</option>
+                <option>Delivered</option>
+                <option>Cancelled</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="table-card border shadow-sm bg-white">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr class="table-light">
+                    <th scope="col" class="text-muted text-uppercase small px-3">Order ID</th>
+                    <th scope="col" class="text-muted text-uppercase small">Customer</th>
+                    <th scope="col" class="text-muted text-uppercase small">Date</th>
+                    <th scope="col" class="text-muted text-uppercase small text-center">Items Count</th>
+                    <th scope="col" class="text-muted text-uppercase small">Total</th>
+                    <th scope="col" class="text-muted text-uppercase small">Payment</th>
+                    <th scope="col" class="text-muted text-uppercase small">Status</th>
+                    <th scope="col" class="text-muted text-uppercase small text-end px-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td class="px-3 fw-bold text-dark">#{{ order.id }}</td>
+                    <td>
+                        <div class="fw-semibold text-dark">{{ order.first_name }} {{ order.last_name }}</div>
+                        <span class="text-muted small" style="font-size: 0.75rem;">{{ order.email }}</span>
+                    </td>
+                    <td>{{ order.created|date:"Y-m-d H:i" }}</td>
+                    <td class="text-center">{{ order.items.count }}</td>
+                    <td class="fw-bold text-primary">${{ order.get_total_cost }}</td>
+                    <td>
+                        {% if order.paid %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 small rounded-pill">Paid</span>
+                        {% else %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 small rounded-pill">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.status == 'Delivered' %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 small rounded-pill">Delivered</span>
+                        {% elif order.status == 'Shipped' %}
+                            <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1 small rounded-pill">Shipped</span>
+                        {% elif order.status == 'Cancelled' %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 small rounded-pill">Cancelled</span>
+                        {% else %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 small rounded-pill">Processing</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end px-3">
+                        <a href="{% url 'dashboard:order_details' order.id %}" class="btn btn-sm btn-link text-primary text-decoration-none p-0 me-2"><i class="bi bi-eye me-1"></i>View</a>
+                        <button class="btn btn-sm btn-link text-secondary text-decoration-none p-0 me-2" data-bs-toggle="modal" data-bs-target="#statusModal" onclick="setOrderIdForStatus({{ order.id }}, '{{ order.status|escapejs }}', '{{ order.tracking_number|escapejs }}')"><i class="bi bi-arrow-repeat me-1"></i>Status</button>
+                        <button class="btn btn-sm btn-link text-danger text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="setDeleteOrder({{ order.id }})"><i class="bi bi-trash me-1"></i>Delete</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">No orders registered.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination UI -->
+<nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination pagination-sm shadow-sm rounded">
+        <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+    </ul>
+</nav>
+
+<!-- ===================================== -->
+<!-- STATUS MODAL                          -->
+<!-- ===================================== -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold text-dark" id="statusModalLabel">Update Order Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'dashboard:update_order_status' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" id="status_order_id_input">
+                <div class="modal-body p-4">
+                    <p class="text-muted small">Update shipping/processing state for Order <strong class="text-dark" id="status_order_id">#</strong></p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Order Status</label>
+                        <select name="status" id="status_select" class="form-select" required>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label small fw-medium">Tracking Number (Optional)</label>
+                        <input type="text" name="tracking_number" id="tracking_input" class="form-control" placeholder="e.g. TRK123456789">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- DELETE ORDER MODAL                    -->
+<!-- ===================================== -->
+<div class="modal fade" id="deleteOrderModal" tabindex="-1" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold text-danger" id="deleteOrderModalLabel">Delete Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'dashboard:delete_order' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" id="del_order_id_input">
+                <div class="modal-body p-4 text-center">
+                    <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3 d-block"></i>
+                    <h5 class="fw-bold text-dark">Are you absolutely sure?</h5>
+                    <p class="text-muted small">You are about to delete order <strong class="text-dark" id="del_order_id">#</strong>. This action is irreversible and will remove the record from sales registries.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger px-4">Confirm Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function setOrderIdForStatus(id, currentStatus, trackingNumber) {
+        document.getElementById('status_order_id').innerText = '#' + id;
+        document.getElementById('status_order_id_input').value = id;
+        document.getElementById('status_select').value = currentStatus;
+        document.getElementById('tracking_input').value = trackingNumber;
+    }
+
+    function setDeleteOrder(id) {
+        document.getElementById('del_order_id').innerText = '#' + id;
+        document.getElementById('del_order_id_input').value = id;
+    }
+</script>
+{% endblock %}

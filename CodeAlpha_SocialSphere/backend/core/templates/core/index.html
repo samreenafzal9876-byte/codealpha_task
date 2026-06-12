@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialSphere - Connect, Share, Discover</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout" class="full-width">
+        <main class="main-content" style="max-width: 100%; padding: 0; margin: 0; animation: none;">
+            <div class="landing-grid">
+                <!-- Left Panel: Brand info & CTA -->
+                <div class="landing-left">
+                    <div class="logo-container" style="font-size: 2rem;">
+                        <i class="fa-solid fa-circle-nodes"></i>
+                        <span>SocialSphere</span>
+                    </div>
+                    
+                    <h1 class="landing-tagline">
+                        Connect.<br>
+                        Share.<br>
+                        Discover.
+                    </h1>
+                    
+                    <p class="landing-desc">
+                        Step into a modern, beautifully designed social space. Express yourself, share your daily stories, comment on interesting topics, and follow creatives around the globe. Fully responsive, lightning fast, and glassmorphic.
+                    </p>
+                    
+                    <div style="display:flex; gap: 16px; width: 100%; max-width: 380px;">
+                        <a href="{% url 'login' %}" class="btn btn-primary" style="flex:1; padding: 14px 28px; font-size: 1rem; text-align: center;">Sign In</a>
+                        <a href="{% url 'register' %}" class="btn btn-secondary" style="flex:1; padding: 14px 28px; font-size: 1rem; text-align: center;">Sign Up</a>
+                    </div>
+                    
+                    <div class="landing-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">50K+</span>
+                            <span class="stat-label">Active Creators</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">1.2M</span>
+                            <span class="stat-label">Posts Shared</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">200K+</span>
+                            <span class="stat-label">Daily Views</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Panel: Visual Card Presentation -->
+                <div class="landing-right">
+                    <div class="auth-card" style="max-width: 480px; text-align: center; border-radius: var(--radius-lg); transform: rotate(1deg); transition: transform 0.3s;">
+                        <div class="auth-logo">
+                            <i class="fa-solid fa-circle-nodes"></i>
+                            <span>SocialSphere</span>
+                        </div>
+                        <p style="color:var(--text-secondary); margin-bottom: 24px; font-size: 0.95rem;">
+                            Join our curated feed of creators. Take a peek inside:
+                        </p>
+                        
+                        <!-- Mini Post Preview Card -->
+                        <div class="card" style="text-align: left; margin-bottom: 20px; background: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.05);">
+                            <div class="post-header">
+                                <div class="post-author">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" alt="Jane" class="user-avatar-sm">
+                                    <div class="post-author-meta">
+                                        <span class="post-author-name" style="font-size:0.85rem">Jane Doe</span>
+                                        <span class="post-author-handle" style="font-size:0.7rem">@jane_doe</span>
+                                    </div>
+                                </div>
+                                <span class="post-time" style="font-size:0.7rem">2m ago</span>
+                            </div>
+                            <p class="post-content" style="font-size: 0.85rem; margin-bottom: 12px;">
+                                Just designed the landing page preview cards. Let's make social media aesthetic again! ✨🎨 #design
+                            </p>
+                            <div style="display:flex; gap:16px; font-size:0.75rem; color:var(--text-muted);">
+                                <span><i class="fa-solid fa-heart" style="color:var(--heart);"></i> 42 Likes</span>
+                                <span><i class="fa-solid fa-comment" style="color:var(--primary);"></i> 8 Comments</span>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-full">
+                            Explore Home Feed <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // Apply saved theme settings for preview
+        const config = JSON.parse(localStorage.getItem("sphereSettings")) || { theme: "dark", accent: "indigo" };
+        if (config.theme === "light") document.body.classList.add("light-theme");
+        if (config.accent !== "indigo") document.body.classList.add(`theme-${config.accent}`);
+    </script>
+</body>
+</html>

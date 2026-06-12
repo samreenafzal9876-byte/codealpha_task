@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post - SocialSphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app-layout" class="no-right-sidebar">
+        <!-- Header & Sidebar injected by layout.js -->
+
+        <main class="main-content">
+            <div class="feed-header">
+                <h2 class="feed-title">Create Post</h2>
+                <a href="feed.html" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Feed
+                </a>
+            </div>
+
+            <!-- Post Composer Card -->
+            <div class="card">
+                <div class="post-composer-row">
+                    <img src="" alt="" class="user-avatar-sm" id="create-post-avatar">
+                    <div class="post-composer-input" style="width:100%;">
+                        <textarea id="create-post-textarea" class="input-field" placeholder="What is happening in your sphere? Share your thoughts..." style="min-height:160px; resize:vertical;"></textarea>
+
+                        <!-- Media Preview Area -->
+                        <div id="create-media-preview" style="display:none; position:relative; margin-top:16px; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border-color);">
+                            <img src="" id="create-media-preview-img" style="width:100%; max-height:300px; object-fit:cover;">
+                            <button type="button" id="create-cancel-media-btn" style="position:absolute; top:8px; right:8px; width:32px; height:32px; border-radius:50%; background:rgba(0,0,0,0.6); color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Actions Row -->
+                        <div class="post-composer-actions" style="margin-top:16px;">
+                            <div class="post-composer-tools">
+                                <button type="button" class="tool-btn" id="create-attach-image-btn" title="Add Image (Simulated)">
+                                    <i class="fa-regular fa-image"></i>
+                                </button>
+                                <button type="button" class="tool-btn" title="Add Emoji">
+                                    <i class="fa-regular fa-face-smile"></i>
+                                </button>
+                                <button type="button" class="tool-btn" title="Add GIF">
+                                    <i class="fa-solid fa-gift"></i>
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="create-submit-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Publish Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="card" style="padding:20px;">
+                <p style="font-size:0.85rem; color:var(--text-muted);">
+                    <i class="fa-solid fa-lightbulb" style="color:var(--primary); margin-right:6px;"></i>
+                    <strong>Tip:</strong> Use <span style="color:var(--primary);">#hashtags</span> to make your post discoverable, and <span style="color:var(--primary);">@mentions</span> to tag friends.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/create-post.js"></script>
+</body>
+</html>

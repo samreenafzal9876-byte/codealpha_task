@@ -1,0 +1,183 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ profile_user.first_name|default:profile_user.username }} (@{{ profile_user.username }}) - SocialSphere{% endblock %}
+{% block profile_active %}{% if request.user == profile_user %}active{% endif %}{% endblock %}
+{% block mobile_profile_active %}{% if request.user == profile_user %}active{% endif %}{% endblock %}
+
+{% block content %}
+<main class="main-content" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+    <!-- Profile Header Card -->
+    <div class="card profile-header-card" style="overflow: hidden; padding: 0;">
+        <!-- Banner -->
+        <div class="profile-banner" style="height: 200px; background: linear-gradient(135deg, var(--primary), var(--primary-light));">
+        </div>
+
+        <!-- Meta Section: Avatar, Name, Bio, Details, Stats -->
+        <div class="profile-meta-section" style="padding: 24px; position: relative; margin-top: -60px;">
+            <div class="profile-meta-top" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="{{ profile_user.username }}" class="profile-avatar-large" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--bg-card); object-fit: cover; background: var(--bg-body);">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Default Avatar" class="profile-avatar-large" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--bg-card); object-fit: cover; background: var(--bg-body);">
+                {% endif %}
+                
+                {% if request.user == profile_user %}
+                    <a href="{% url 'edit_profile' %}" class="btn btn-secondary">
+                        <i class="fa-solid fa-pen"></i> Edit Profile
+                    </a>
+                {% else %}
+                    <form method="post" action="{% url 'toggle_follow' username=profile_user.username %}">
+                        {% csrf_token %}
+                        {% if is_following %}
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fa-solid fa-user-minus"></i> Unfollow
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-user-plus"></i> Follow
+                            </button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="profile-info">
+                <h2 class="profile-name" style="font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; color: var(--text-primary);">
+                    {{ profile_user.first_name|default:profile_user.username }}
+                </h2>
+                <p class="profile-handle" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+                    @{{ profile_user.username }}
+                </p>
+                
+                {% if profile.bio %}
+                    <p class="profile-bio" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; font-size: 1rem;">
+                        {{ profile.bio }}
+                    </p>
+                {% else %}
+                    <p class="profile-bio" style="color: var(--text-muted); font-style: italic; margin-bottom: 16px; font-size: 0.95rem;">
+                        No bio written yet.
+                    </p>
+                {% endif %}
+
+                <div class="profile-details-grid" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; font-size: 0.9rem; color: var(--text-secondary);">
+                    {% if profile.location %}
+                        <span><i class="fa-solid fa-location-dot" style="margin-right: 6px; color: var(--primary);"></i>{{ profile.location }}</span>
+                    {% endif %}
+                    {% if profile.website %}
+                        <span><i class="fa-solid fa-link" style="margin-right: 6px; color: var(--primary);"></i><a href="{{ profile.website }}" target="_blank" style="color: var(--primary); text-decoration: none;">{{ profile.website }}</a></span>
+                    {% endif %}
+                    <span><i class="fa-solid fa-calendar-days" style="margin-right: 6px; color: var(--primary);"></i>Joined {{ profile.created_date|date:"F Y" }}</span>
+                </div>
+
+                <div class="profile-stats-row" style="display: flex; gap: 24px; font-size: 0.95rem; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                    <span><strong style="color: var(--text-primary);">{{ posts.count }}</strong> Posts</span>
+                    <span>
+                        <a href="{% url 'following_list' username=profile_user.username %}" style="text-decoration: none; color: inherit;">
+                            <strong style="color: var(--text-primary);">{{ profile_user.following.count }}</strong> Following
+                        </a>
+                    </span>
+                    <span>
+                        <a href="{% url 'followers_list' username=profile_user.username %}" style="text-decoration: none; color: inherit;">
+                            <strong style="color: var(--text-primary);">{{ profile_user.followers.count }}</strong> Followers
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-nav" style="display: flex; border-bottom: 1px solid var(--border-color); margin-top: 30px; margin-bottom: 20px;">
+        <button class="tab-btn active" style="background: none; border: none; border-bottom: 2px solid var(--primary); padding: 12px 24px; font-weight: 600; color: var(--primary); cursor: pointer;">
+            <i class="fa-solid fa-newspaper" style="margin-right: 8px;"></i> Posts
+        </button>
+    </div>
+
+    <!-- Tab Content: Posts -->
+    <div id="tab-posts" class="tab-content">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="card post-card" style="margin-bottom: 20px;">
+                    <div class="post-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div class="post-author" style="display: flex; align-items: center; gap: 12px;">
+                            {% if profile_user.profile.profile_picture %}
+                                <img src="{{ profile_user.profile.profile_picture.url }}" alt="{{ profile_user.username }}" class="post-author-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" class="post-author-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            {% endif %}
+                            <div class="post-author-meta">
+                                <span class="post-author-name" style="font-weight: 600; color: var(--text-primary);">
+                                    {{ profile_user.first_name|default:profile_user.username }}
+                                </span>
+                                <span class="post-author-handle" style="display: block; font-size: 0.8rem; color: var(--text-muted);">
+                                    @{{ profile_user.username }}
+                                </span>
+                            </div>
+                        </div>
+                        <span class="post-time" style="font-size: 0.8rem; color: var(--text-muted);">
+                            {{ post.created_date|timesince }} ago
+                        </span>
+                    </div>
+
+                    <div class="post-content" style="color: var(--text-primary); margin-bottom: 12px; line-height: 1.5; white-space: pre-wrap;">{{ post.caption }}</div>
+
+                    {% if post.image %}
+                        <a href="{% url 'post_detail' pk=post.pk %}">
+                            <img src="{{ post.image.url }}" alt="Post image" class="post-image" style="width: 100%; border-radius: var(--radius-md); max-height: 350px; object-fit: cover; margin-bottom: 12px;">
+                        </a>
+                    {% endif %}
+
+                    <div class="post-actions" style="display: flex; gap: 16px; border-top: 1px solid var(--border-color); padding-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
+                        <button onclick="toggleLike({{ post.pk }}, this)" style="background: none; border: none; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            {% if post.pk in liked_posts_ids %}
+                                <i class="fa-solid fa-heart" style="color: var(--danger);"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart"></i>
+                            {% endif %}
+                            <span class="like-count">{{ post.likes.count }}</span>
+                        </button>
+                        <a href="{% url 'post_detail' pk=post.pk %}" class="action-trigger" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>{{ post.comments.count }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card" style="text-align: center; padding: 48px 24px;">
+                <i class="fa-regular fa-face-meh" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px; display: block;"></i>
+                <p style="color: var(--text-secondary); font-size: 1rem;">No posts published yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleLike(postId, btn) {
+        fetch(`/post/${postId}/like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const icon = btn.querySelector('i');
+            const count = btn.querySelector('.like-count');
+            if (data.liked) {
+                icon.className = 'fa-solid fa-heart';
+                icon.style.color = 'var(--danger)';
+            } else {
+                icon.className = 'fa-regular fa-heart';
+                icon.style.color = '';
+            }
+            count.textContent = data.likes_count;
+        })
+        .catch(err => console.error("Error toggling like:", err));
+    }
+</script>
+{% endblock %}

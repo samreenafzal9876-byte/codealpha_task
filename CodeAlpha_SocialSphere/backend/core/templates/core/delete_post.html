@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Delete Post - SocialSphere{% endblock %}
+{% block layout_class %}no-right-sidebar{% endblock %}
+
+{% block content %}
+<main class="main-content" style="max-width: 500px; margin: 60px auto; padding: 0 20px;">
+    <div class="card" style="padding: 32px; text-align: center;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--danger); margin-bottom: 20px; display: block;"></i>
+        <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 12px; color: var(--text-primary);">Delete Post?</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;">
+            Are you sure you want to permanently delete this post? This action cannot be undone.
+        </p>
+
+        <div class="card" style="text-align: left; padding: 16px; background: rgba(255,255,255,0.02); border-color: var(--border-color); margin-bottom: 28px;">
+            <p style="font-style: italic; color: var(--text-secondary); font-size: 0.95rem;">
+                "{{ post.caption|truncatechars:100 }}"
+            </p>
+        </div>
+
+        <form method="post" action="{% url 'delete_post' pk=post.pk %}">
+            {% csrf_token %}
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="submit" class="btn" style="background: var(--danger); color: white; padding: 10px 24px;">
+                    Delete Permanently
+                </button>
+                <a href="{% url 'post_detail' pk=post.pk %}" class="btn btn-secondary" style="padding: 10px 24px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

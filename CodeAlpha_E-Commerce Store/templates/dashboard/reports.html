@@ -1,0 +1,152 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Business Reports - Aura Store Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Analytics & Reports</h1>
+        <span class="text-muted small">Analyze store sales performance, catalog conversion, and customer retention.</span>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-white border shadow-sm px-3" onclick="alert('PDF download triggered successfully (Mock)!')"><i class="bi bi-filetype-pdf me-1"></i> Export PDF</button>
+        <button class="btn btn-sm btn-white border shadow-sm px-3" onclick="alert('CSV export triggered successfully (Mock)!')"><i class="bi bi-filetype-csv me-1"></i> Export CSV</button>
+    </div>
+</div>
+
+<!-- Tabs selector -->
+<div class="card border shadow-sm bg-white mb-4">
+    <div class="card-header bg-white border-bottom p-0">
+        <ul class="nav nav-tabs border-0" id="reportTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active py-3 px-4 fw-bold border-0 border-bottom-3" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales-report" type="button" role="tab" aria-controls="sales-report" aria-selected="true"><i class="bi bi-graph-up me-2"></i> Sales Report</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 px-4 fw-bold border-0" id="product-tab" data-bs-toggle="tab" data-bs-target="#product-report" type="button" role="tab" aria-controls="product-report" aria-selected="false"><i class="bi bi-box-seam me-2"></i> Product Report</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 px-4 fw-bold border-0" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-report" type="button" role="tab" aria-controls="customer-report" aria-selected="false"><i class="bi bi-people me-2"></i> Customer Report</button>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="card-body p-4">
+        <div class="tab-content" id="reportTabsContent">
+            <!-- SALES REPORT TAB -->
+            <div class="tab-pane fade show active" id="sales-report" role="tabpanel" aria-labelledby="sales-tab">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="bg-light p-3 rounded border text-center">
+                            <span class="text-muted small d-block mb-1">Average Order Value (AOV)</span>
+                            <h4 class="fw-bold text-dark mb-0">$185.50</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-light p-3 rounded border text-center">
+                            <span class="text-muted small d-block mb-1">Order Conversion Rate</span>
+                            <h4 class="fw-bold text-dark mb-0">3.82%</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-light p-3 rounded border text-center">
+                            <span class="text-muted small d-block mb-1">Gross Merchandise Volume (GMV)</span>
+                            <h4 class="fw-bold text-dark mb-0">$20,500.00</h4>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="fw-bold text-dark mb-3">Monthly Sales Distribution</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover border align-middle mb-0">
+                        <thead>
+                            <tr class="table-light">
+                                <th scope="col" class="text-muted text-uppercase small px-3">Month</th>
+                                <th scope="col" class="text-muted text-uppercase small">Total Orders</th>
+                                <th scope="col" class="text-muted text-uppercase small">Gross Sales</th>
+                                <th scope="col" class="text-muted text-uppercase small text-end px-3">Performance Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in sales_data %}
+                            <tr>
+                                <td class="px-3 fw-semibold">{{ item.month }} 2026</td>
+                                <td>{{ item.sales }}</td>
+                                <td class="fw-bold text-dark">${{ item.revenue }}</td>
+                                <td class="text-end px-3"><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 small rounded">Growth</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- PRODUCT REPORT TAB -->
+            <div class="tab-pane fade" id="product-report" role="tabpanel" aria-labelledby="product-tab">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="card p-3 border bg-light h-100">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-trophy text-warning me-2"></i> Top Selling Products</h6>
+                            <ul class="list-group list-group-flush bg-transparent">
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                    <span>Smartphone X</span>
+                                    <span class="badge bg-primary rounded-pill">12 Units Sold</span>
+                                </li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                    <span>Wireless Headphones</span>
+                                    <span class="badge bg-primary rounded-pill">8 Units Sold</span>
+                                </li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                    <span>Cotton T-Shirt</span>
+                                    <span class="badge bg-primary rounded-pill">5 Units Sold</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-3 border bg-light h-100">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-exclamation-octagon text-danger me-2"></i> Stock Depletion Alerts</h6>
+                            <ul class="list-group list-group-flush bg-transparent">
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                    <span class="text-danger">Smartphone X</span>
+                                    <span class="badge bg-danger rounded-pill">Only 4 Left</span>
+                                </li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                    <span>Wireless Headphones</span>
+                                    <span class="badge bg-success rounded-pill">198 Left</span>
+                                </li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                                    <span>Cotton T-Shirt</span>
+                                    <span class="badge bg-success rounded-pill">95 Left</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CUSTOMER REPORT TAB -->
+            <div class="tab-pane fade" id="customer-report" role="tabpanel" aria-labelledby="customer-tab">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded border text-center">
+                            <i class="bi bi-people fs-1 text-primary mb-2"></i>
+                            <h5 class="fw-bold text-dark mb-1">New Signups (This Month)</h5>
+                            <h2 class="fw-bold text-dark mb-0">+32</h2>
+                            <span class="text-muted small">8.4% growth rate week-on-week</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded border text-center">
+                            <i class="bi bi-wallet2 fs-1 text-success mb-2"></i>
+                            <h5 class="fw-bold text-dark mb-1">Customer Lifetime Value (LTV)</h5>
+                            <h2 class="fw-bold text-dark mb-0">$340.00</h2>
+                            <span class="text-muted small">Average customer lifetime purchase volume</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

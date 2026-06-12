@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Aura Store{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Navigation (col-md-4) -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm p-4 bg-white text-center">
+                <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3 mx-auto" style="width: 80px; height: 80px;">
+                    <i class="bi bi-person fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-1" style="font-family: 'Outfit', sans-serif;">{{ user.username }}</h4>
+                <p class="text-muted small mb-3">Member since {{ user.date_joined|date:"M Y" }}</p>
+                <hr class="w-100">
+                <div class="d-flex flex-column gap-2 text-start mt-2">
+                    <a href="{% url 'users:profile' %}" class="btn btn-primary text-start"><i class="bi bi-person-gear me-2"></i> Profile Settings</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Card (col-md-8) -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <h2 class="fw-bold text-dark mb-2" style="font-family: 'Outfit', sans-serif;">Profile Settings</h2>
+                <p class="text-muted small mb-4">Manage your personal details and account settings.</p>
+
+                <!-- Alerts for success messages -->
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-success border-0 py-2.5 px-3 small mb-4" style="border-radius: 8px;">
+                            <i class="bi bi-check-circle-fill me-2"></i> {{ msg }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label fw-medium small">First Name</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ user.first_name }}" placeholder="Your first name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label fw-medium small">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ user.last_name }}" placeholder="Your last name">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-medium small">Email Address</label>
+                        <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-medium small d-block">Username</label>
+                        <input type="text" class="form-control bg-light" value="{{ user.username }}" disabled>
+                        <div class="form-text text-muted small" style="font-size: 0.75rem;">Username cannot be modified.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4 py-2.5">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
