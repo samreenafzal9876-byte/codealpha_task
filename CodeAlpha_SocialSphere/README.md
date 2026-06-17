@@ -1,10 +1,10 @@
-# ⬡ SocialSphere
+#  SocialSphere
 
 SocialSphere is a modern, responsive, and visually stunning social media platform designed to connect creators, developers, and thinkers in a sleek, glassmorphic digital space. Built on the robust **Django** framework on the backend and styled using highly polished, vanilla **HTML, CSS, and JavaScript** on the frontend, SocialSphere offers a complete suite of social interactions including post creation, comments, likes, and followers within a beautiful dark-indigo system.
 
 ---
 
-## 🚀 Features
+##  Features
 
 SocialSphere comes fully equipped with the following core features:
 
@@ -22,7 +22,7 @@ SocialSphere comes fully equipped with the following core features:
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 ### Frontend
 *   **HTML5:** Structured semantic markup.
@@ -39,7 +39,7 @@ SocialSphere comes fully equipped with the following core features:
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 The project separates the static, client-side UI mockup prototype from the functional Django server backend:
 
@@ -73,7 +73,7 @@ SocialSphere/
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 Follow these steps to run SocialSphere on your local machine:
 
@@ -138,7 +138,7 @@ To quickly test the application, you can use the following default credentials (
 
 ---
 
-## 🔄 User Workflow
+##  User Workflow
 
 1.  **Landing & Onboarding:** An unauthenticated visitor lands on the index page, where they can view statistics and preview post cards. They can click **Sign Up** to create an account or **Sign In** if already registered.
 2.  **Registration:** The user registers by filling in the username, email, full name, and passwords. Upon submission, a `UserProfile` is automatically generated for them via Django signals, and they are automatically logged in and redirected to the feed.
@@ -151,7 +151,7 @@ To quickly test the application, you can use the following default credentials (
 
 ---
 
-## 🛡️ Admin Workflow
+##  Admin Workflow
 
 1.  **Login:** The administrator accesses the admin portal at `http://127.0.0.1:8000/admin/` using the superuser credentials.
 2.  **Mission Control Dashboard:** The admin is presented with a customized dark-mode dashboard configured with navigation links, search capabilities, and model analytics.
@@ -165,7 +165,7 @@ To quickly test the application, you can use the following default credentials (
 
 ---
 
-## 📊 Database Tables
+##  Database Tables
 
 SocialSphere operates on a relational SQLite schema mapped using Django models:
 
@@ -221,7 +221,7 @@ Tracks user networking graphs.
 
 ---
 
-## 🔒 Security Features
+##  Security Features
 
 SocialSphere utilizes multiple layers of security protections built directly into Django:
 
@@ -233,7 +233,7 @@ SocialSphere utilizes multiple layers of security protections built directly int
 
 ---
 
-## 🔮 Future Improvements
+##  Future Improvements
 
 Proposed features for future versions of SocialSphere:
 
@@ -245,6 +245,6 @@ Proposed features for future versions of SocialSphere:
 
 ---
 
-## 📝 Conclusion
+##  Conclusion
 
 SocialSphere is a modern social platform combining an engaging interface with robust backend controls. Using Django's templating and administrative engines, it offers an extensible base to expand into a production-grade social network.
