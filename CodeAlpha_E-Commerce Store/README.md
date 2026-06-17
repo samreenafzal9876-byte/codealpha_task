@@ -2,12 +2,12 @@
 
 Aura Store is a premium, modern, and fully functional multi-vendor E-Commerce platform built with Django. It features a complete Role-Based Authentication System with distinct flows for Buyers and Sellers.
 
-## 🌟 Project Overview
+##  Project Overview
 Aura Store provides a seamless shopping experience for customers while giving vendors (sellers) a powerful administrative dashboard to manage their catalog, monitor sales, and interact with customers. The platform boasts a beautiful, modern UI built with Bootstrap 5 and custom aesthetics.
 
 ---
 
-## 🚀 Features
+##  Features
 
 ### Buyer Features
 - **Role-Based Login/Registration**: Dedicated tabbed interface for buyer sign-ups.
@@ -26,7 +26,7 @@ Aura Store provides a seamless shopping experience for customers while giving ve
 
 ---
 
-## 🛠 Technologies Used
+##  Technologies Used
 - **Backend**: Python 3, Django 6.0
 - **Database**: SQLite3 (Development)
 - **Frontend**: HTML5, CSS3, Bootstrap 5, JavaScript
@@ -34,7 +34,7 @@ Aura Store provides a seamless shopping experience for customers while giving ve
 
 ---
 
-## 📂 System Architecture & Folder Structure
+##  System Architecture & Folder Structure
 ```text
 E-Commerce Store/
 ├── cart/               # Shopping cart logic and session management
@@ -49,7 +49,7 @@ E-Commerce Store/
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Environment Setup
 Clone the repository and navigate into the project directory:
@@ -93,7 +93,7 @@ Visit the website at `http://127.0.0.1:8000/`.
 
 ---
 
-## 🔐 Authentication Flow
+##  Authentication Flow
 Aura Store uses a robust Role-Based Authentication System via a custom `UserProfile` linked to Django's built-in `User` model.
 
 1. **Sign Up**: Users visit `/users/register/` and select either the **Buyer** or **Seller** tab.
@@ -103,7 +103,7 @@ Aura Store uses a robust Role-Based Authentication System via a custom `UserProf
    - Buyers ➡️ Homepage (`/`)
    - Sellers ➡️ Admin Dashboard (`/dashboard/`)
 
-### 🔑 Demo Credentials
+###  Demo Credentials
 
 **Buyer Account:**
 - **Email:** `buyer@test.com`
@@ -119,7 +119,7 @@ Aura Store uses a robust Role-Based Authentication System via a custom `UserProf
 
 ---
 
-## 🧪 Testing Summary
+##  Testing Summary
 A comprehensive audit was performed across UI/UX, Security, Performance, and Code Quality. 
 - **Security Check**: Enforced `SECURE_BROWSER_XSS_FILTER` and `X_FRAME_OPTIONS`.
 - **Routing Integrity**: Verified that buyers cannot access `/dashboard/` endpoints.
